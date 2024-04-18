@@ -1,6 +1,4 @@
 # SHIMMER_EFFECT
-###The goal of this project is to recreate a version of the famous shimmer reverb effect using digital audio processing. 
-
 
 In this project we will explore and implement a basic shimmer reverb effect. This effect has been used by a lot of artists such as Brian Eno, Daniel Lanois, U2, etc... The result of this effect is a very long decay, big reverb effect that can transform a dry guitar sound to an angelic, ambient pad (for example). 
 
