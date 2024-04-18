@@ -15,6 +15,6 @@ Too choose a design for our a shimmer, we can take as example the very powerful 
 
 The project will then consists of two big parts : 
 1. Creating a Proof-Of-Concept (in a jupyter notebook) of the effect by choosing the design, the implementation of the differents processing blocks, the parameters of the design, etc...
-2. Implementing the effect C to be able to use it in real-time 
+2. Implementing the effect with C to be able to use it in real-time 
 
 Our chance is that the founder of ValhallaDSP, Sean Costello, offers a variety of posts about the designs of his plugins on the [main page](https://valhalladsp.com/category/learn/plugin-design-learn/) of the company. We have then a lot of insights to help us during the design process. 
