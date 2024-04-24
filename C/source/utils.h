@@ -12,7 +12,24 @@
 //-----------------------------------------------------------------
 
 /**
- * Structure to store the parameters of the shimmer effect
+ * @brief represent the parameters of the shimmer effect
+ * 
+ * @param mode The mode of the shimmer effect.
+ * 
+ * @param lowcut The lowcut frequency.
+ * 
+ * @param highcut The highcut frequency.
+ * 
+ * @param mix The mix of the shimmer effect.
+ * 
+ * @param feedback The feedback of the shimmer effect.
+ * 
+ * @param shift The pitch shift of the shimmer effect.
+ * 
+ * @param size The size of the shimmer effect.
+ * 
+ * @param diffusion The diffusion of the shimmer effect.
+ * 
 */
 typedef struct {
     char mode[20];

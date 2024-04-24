@@ -4,6 +4,9 @@
 //macros declarations
 //-----------------------------------------------------------------
 
+#define GRAIN_SIZE 1024
+#define FADE 0.4
+
 //-----------------------------------------------------------------
 //structures delcarations
 //-----------------------------------------------------------------
@@ -41,13 +44,9 @@ typedef struct {
  * 
  * @param shift_factor The pitch shift factor.
  * 
- * @param grain_size The grain size.
- * 
- * @param fade The fade.
- * 
  * @return The dynamic allocated pitch shifter
 */
-GS_pitchshift* init_gs_pitchshift(int shift_factor, int grain_size, double fade);
+GS_pitchshift* init_gs_pitchshift(int shift_factor);
 
 /**
  * @brief Reset the pitch shifter internal buffers

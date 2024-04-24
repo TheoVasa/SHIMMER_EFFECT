@@ -48,8 +48,10 @@ void reset_delay_line(DelayLine* delay_line);
  * @param x The input buffer.
  * 
  * @param y The output buffer.
+ * 
+ * @param buffer_size The size of the buffer.
 */
-void apply_delay_line(DelayLine* delay_line, double* x, double* y);
+void apply_delay_line(DelayLine* delay_line, double* x, double* y, int buffer_size);
 
 /**
  * @brief Free the memory allocated by the delay line

@@ -29,6 +29,8 @@
  * 
  * @param parameters The parameters of the shimmer effect.
  * 
+ * @param feedback_buf The internal output buffer for the feedback loop
+ * 
 */
 typedef struct {
     Schroeder_reverberator* reverberator;
@@ -37,6 +39,7 @@ typedef struct {
     Butterworth *highpass;
     DelayLine *delay_line;
     Parameters *parameters;
+    double* feedback_buf;
 } Shimmer;
 
 //-----------------------------------------------------------------
@@ -48,14 +51,10 @@ typedef struct {
  * 
  * @param parameters The user parameters of the shimmer effect.
  * 
- * @param grain_size The grain size of the pitch shifter.
- * 
- * @param fade The fade of the pitch shifter.
- * 
  * @return The dynamic allocated pitch shifter
  * 
 */
-Shimmer* init_shimmer(Parameters *parameters, int grain_size, double fade);
+Shimmer* init_shimmer(Parameters *parameters);
 
 /**
  * @brief Reset the shimmer internal buffers
@@ -75,9 +74,11 @@ void reset_shimmer(Shimmer* shimmer);
  * 
  * @param y The output buffer.
  * 
+ * @param buffer_size The size of the buffer.
+ * 
  * @return void
 */
-void apply_shimmer(Shimmer* shimmer, double* x, double* y);
+void apply_shimmer(Shimmer* shimmer, double* x, double* y, int buffer_size);
 
 /**
  * @brief Free the memory allocated by the shimmer effect

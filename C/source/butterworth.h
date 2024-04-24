@@ -6,6 +6,10 @@
 //macros declarations
 //-----------------------------------------------------------------
 
+#define LOWPASS 0
+#define HIGHPASS 1
+#define ORDER 4
+
 //-----------------------------------------------------------------
 //structures delcarations
 //-----------------------------------------------------------------
@@ -15,13 +19,11 @@
  * 
  * @param iir The IIR filter.
  * 
- * @param order The order of the butterworth filter.
  * 
  * @param type The type of the butterworth filter (0 for low-pass, 1 for high-pass).
 */
 typedef struct butterworth {
     IIR* iir;
-    int order;
     int type;
 } Butterworth;
 
@@ -32,15 +34,13 @@ typedef struct butterworth {
 /**
  * @brief Create a butterworth filter
  * 
- * @param order The order of the butterworth filter.
- * 
  * @param type The type of the butterworth filter (0 for low-pass, 1 for high-pass).
  * 
  * @param fc The cut-off frequency of the butterworth filter.
  * 
  * @return The dynamic allocated butterworth filter
 */
-Butterworth *init_butterworth(int order, int type, double fc);
+Butterworth *init_butterworth(int type, double fc);
 
 /**
  * @brief Reset the butterworth filter internal buffers
@@ -60,9 +60,11 @@ void reset_butterworth(Butterworth* butterworth);
  * 
  * @param y The output buffer.
  * 
+ * @param buffer_size The size of the buffer.
+ * 
  * @return void
 */
-void filter_butterworth(Butterworth* butterworth, double* x, double* y);
+void filter_butterworth(Butterworth* butterworth, double* x, double* y, int buffer_size);
 
 /**
  * @brief Free the memory allocated by the butterworth filter
