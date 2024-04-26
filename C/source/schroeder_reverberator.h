@@ -6,19 +6,6 @@
 //macros declarations
 //-----------------------------------------------------------------
 
-//template for the Schroeder reverberator filters parameters
-#define PRIMES {2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113}
-#define PRIME_COUNT 30
-#define BASIC_GAIN_AP 0.7
-#define BASIC_GAINS_C {0.773, 0.802, 0.753, 0.733}
-#define BASIC_DELAYS_C {113.2, 127.3, 153.5, 151.7}
-#define MAX_SHIFT_GAIN_C 0.1
-#define MAX_SHIFT_DELAY_C 100.0
-#define MIN_AP 3
-#define MAX_AP 9
-#define N_C 4
-//the wet ratio
-#define WET_REVERB 0.4
 
 //-----------------------------------------------------------------
 //structures delcarations

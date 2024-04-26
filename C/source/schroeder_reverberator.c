@@ -123,8 +123,8 @@ IIR* generate_allpass(double gain, double delay){
     //compute the length in samples given the delay in ms
     int m = time_to_samples(delay); 
     //the coefficients of the transfer function
-    double a[m+1];  
-    double b[m+1];
+    double *a = (double*)malloc((m+1)*sizeof(double));  
+    double *b = (double*)malloc((m+1)*sizeof(double));
     a[m] = -gain; 
     b[0] = -gain; 
     b[m] = 1; 
@@ -136,8 +136,8 @@ IIR* generate_comb(double gain, double delay){
     int m = time_to_samples(delay); 
     int n = 1; 
     //the coefficients of the transfer function
-    double a[m+1];  
-    double b[n];
+    double *a = (double*)malloc((m+1)*sizeof(double)); 
+    double *b = (double*)malloc((n)*sizeof(double));
     a[m] = -gain; 
     b[0] = 1; 
     return init_IIR(a, m+1, b, n);

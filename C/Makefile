@@ -1,5 +1,6 @@
 CFLAGS = -Wall -std=c99 -g
 CC = gcc
+#library directory 
 LDFLAGS = -I/c/msys64/ucrt64/include -L/c/msys64/ucrt64/lib -llibportaudio
 
 # Define project directories
@@ -25,7 +26,6 @@ $(OUT_NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(LIB_INC) $(LIB_DIR) $^ -o $@ $(LDFLAGS)
 
 # Rule to compile C source files into object files
-
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.c $(HEADERS)
 	$(CC) $(CFLAGS)  -c $< -o $@ 
 

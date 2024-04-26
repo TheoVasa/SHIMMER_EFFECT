@@ -5,7 +5,6 @@
 #include "utils.h"
 #include "schroeder_reverberator.h"
 
-#define FRAMES_PER_BUFFER (64)
 
 int main(int argc, char* argv[]) {
     //ask the user for the parameters

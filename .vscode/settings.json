@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "schroeder_reverberator.h": "c"
-    }
+        "schroeder_reverberator.h": "c",
+        "iir.h": "c"
+    },
+    "makefile.makefilePath": "C:\\Users\\theov\\OneDrive\\Documents\\PROJETS EPFL\\SHIMMER_EFFECT\\C"
 }

@@ -1,4 +1,5 @@
 #include "delay_line.h"
+#include "utils.h"
 
 DelayLine* init_delay_line(int delay){
     //initialize the delay line
@@ -13,7 +14,6 @@ void reset_delay_line(DelayLine* delay_line){
     for(int i = 0; i < delay_line->delay; i++){
         delay_line->buffer[i] = 0;
     }
-
 }
 
 void apply_delay_line(DelayLine* delay_line, double* x, double* y, int buffer_size){

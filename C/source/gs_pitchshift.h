@@ -4,8 +4,7 @@
 //macros declarations
 //-----------------------------------------------------------------
 
-#define GRAIN_SIZE 1024
-#define FADE 0.4
+
 
 //-----------------------------------------------------------------
 //structures delcarations
@@ -19,20 +18,32 @@
  * 
  * @param fade The fade.
  * 
+ * @param input_size The input number of sample to make GRAIN_SIZE grains
+ * 
+ * @param jump The jump we have to make to correctly overlap our grains.
+ * 
+ * @param overlap The number of samples that will be overlaped between two grains.
+ * 
  * @param win The window.
  * 
  * @param input_buf The internal input buffer.
  * 
  * @param output_buf The internal output buffer.
  * 
+ * @param last_grain The last grain stored.
+ * 
 */
 typedef struct {
     int shift_factor;
     int grain_size; 
     double fade; 
+    int input_size; 
+    int jump; 
+    int overlap;
     double* win;
     double* input_buf;
     double* output_buf;
+    double* last_grain;
 } GS_pitchshift;
 
 //-----------------------------------------------------------------
@@ -63,8 +74,10 @@ void reset_gs_pitchshift(GS_pitchshift* pitch_shifter);
  * @param x The input buffer.
  * 
  * @param y The output buffer.
+ * 
+ * @param buffer_size The size of the buffer.
 */
-void filter_gs_pitchshift(GS_pitchshift* pitch_shifter, double* x, double* y);
+void filter_gs_pitchshift(GS_pitchshift* pitch_shifter, double* x, double* y, int buffer_size);
 
 /**
  * @brief Free the memory allocated by the pitch shifter

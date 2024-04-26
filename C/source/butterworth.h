@@ -6,9 +6,6 @@
 //macros declarations
 //-----------------------------------------------------------------
 
-#define LOWPASS 0
-#define HIGHPASS 1
-#define ORDER 4
 
 //-----------------------------------------------------------------
 //structures delcarations

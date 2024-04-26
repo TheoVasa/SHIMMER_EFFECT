@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 #include "utils.h"
 
-Parameters getUserParameters() {
+Parameters getUserParameters(void) {
     Parameters params;
     //mode
     printf("Enter mode (real-time, play-back, or record): ");
@@ -82,6 +83,50 @@ Parameters getUserParameters() {
 
 int time_to_samples(int time) {
     return (int)((time * SAMPLE_RATE) / 1000);
+}
+
+double *generate_win(int size, double fade){
+    double *win = (double*)malloc(size*sizeof(double));
+    //compute the fade length 
+    int fade_length = (int)(size*fade/2.0);
+    //compute the window 
+    for(int i=0; i<size; i++){
+        //fade-in
+        if(i<fade_length){
+            win[i] = (double)i/(double)size; 
+        }
+        //fade-out
+        else if(i>size-fade_length){
+            win[i] = 1.0 - win[i-(size-fade_length)];
+        }
+        //no fade
+        else {
+            win[i] = 1.0;
+        }
+    }
+}
+
+
+void resample(double* x, double* y, int x_size, int y_size, double factor){
+    //resample the signal using first order interpolation
+    for(int i = 0; i < y_size; i++){
+        double s = i*factor;
+        int n = floor(s); 
+        double x1 = 0; 
+        double x2 = 0; 
+        if(n < x_size) {
+            double x1 = x[n];
+        } 
+        if(n+1 < x_size){
+            double x2 = x[n+1];
+        }
+        y[i] = (1-s+n)*x1 + (s-n)*(x2);
+    }
+}
+
+
+double shift_factor(int shift){
+    return pow(2, shift/12.0);
 }
 
 
