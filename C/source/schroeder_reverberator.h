@@ -2,10 +2,7 @@
 #define SCHROEDER_REVERBERATOR_H
 
 #include "iir.h"
-//-----------------------------------------------------------------
-//macros declarations
-//-----------------------------------------------------------------
-
+#include "utils.h"
 
 //-----------------------------------------------------------------
 //structures delcarations
@@ -69,7 +66,7 @@ void reset_schroeder(Schroeder_reverberator* schroeder);
  * 
  * @return void
 */
-void filter_schroeder(Schroeder_reverberator* schroeder, double* x, double* y, int buffer_size); 
+void filter_schroeder(Schroeder_reverberator* schroeder, data_t* x, data_t* y, int buffer_size); 
 
 /**
  * @brief Free the memory allocated by the Schroeder reverberator

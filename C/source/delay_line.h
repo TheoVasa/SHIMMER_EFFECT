@@ -1,8 +1,7 @@
 #ifndef DELAY_LINE_H
 #define DELAY_LINE_H
-//-----------------------------------------------------------------
-//macros declarations
-//-----------------------------------------------------------------
+
+#include "utils.h"
 
 //-----------------------------------------------------------------
 //structures delcarations
@@ -17,7 +16,7 @@
 */
 typedef struct {
     int delay; 
-    double* buffer;
+    data_t* buffer;
 } DelayLine;
 
 //-----------------------------------------------------------------
@@ -51,7 +50,7 @@ void reset_delay_line(DelayLine* delay_line);
  * 
  * @param buffer_size The size of the buffer.
 */
-void apply_delay_line(DelayLine* delay_line, double* x, double* y, int buffer_size);
+void apply_delay_line(DelayLine* delay_line, data_t* x, data_t* y, int buffer_size);
 
 /**
  * @brief Free the memory allocated by the delay line

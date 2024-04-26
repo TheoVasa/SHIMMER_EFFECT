@@ -1,8 +1,7 @@
 #ifndef IIR_H
 #define IIR_H
-//-----------------------------------------------------------------
-//macros declarations
-//-----------------------------------------------------------------
+
+#include "utils.h"
 
 //-----------------------------------------------------------------
 //structures delcarations
@@ -27,8 +26,8 @@ typedef struct {
     int M; 
     double* b;
     int N;
-    double* xbuf;
-    double* ybuf;    
+    data_t* xbuf;
+    data_t* ybuf;    
 } IIR;
 
 //-----------------------------------------------------------------
@@ -70,7 +69,7 @@ void reset_IIR(IIR* iir);
  * 
  * @return void
 */
-void filter_IIR(IIR* iir, double* x, double* y, int buffer_size);
+void filter_IIR(IIR* iir, data_t* x, data_t* y, int buffer_size);
 
 /**
  * @brief Free the memory allocated for an IIR filter

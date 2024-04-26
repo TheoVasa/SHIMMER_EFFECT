@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+
 #include "utils.h"
 
 Parameters getUserParameters(void) {
@@ -108,25 +109,25 @@ double *generate_win(int size, double fade){
 }
 
 
-void resample(double* x, double* y, int x_size, int y_size, double factor){
+void resample(data_t* x, data_t* y, int x_size, int y_size, double factor){
     //resample the signal using first order interpolation
     for(int i = 0; i < y_size; i++){
         double s = i*factor;
         int n = floor(s); 
-        double x1 = 0; 
-        double x2 = 0; 
+        data_t x1 = 0; 
+        data_t x2 = 0; 
         if(n < x_size) {
-            double x1 = x[n];
+            x1 = x[n];
         } 
         if(n+1 < x_size){
-            double x2 = x[n+1];
+            x2 = x[n+1];
         }
-        y[i] = (1-s+n)*x1 + (s-n)*(x2);
+        y[i] = (data_t)((1-s+n)*x1 + (s-n)*(x2));
     }
 }
 
 
-double shift_factor(int shift){
+double pitch_factor(int shift){
     return pow(2, shift/12.0);
 }
 

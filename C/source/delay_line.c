@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "delay_line.h"
 #include "utils.h"
 
@@ -5,7 +7,7 @@ DelayLine* init_delay_line(int delay){
     //initialize the delay line
     DelayLine* delay_line = (DelayLine*)malloc(sizeof(DelayLine));
     delay_line->delay = delay;
-    delay_line->buffer = (double*)malloc(delay*sizeof(double));
+    delay_line->buffer = (data_t*)malloc(delay*sizeof(data_t));
     return delay_line;
 }
 
@@ -16,7 +18,7 @@ void reset_delay_line(DelayLine* delay_line){
     }
 }
 
-void apply_delay_line(DelayLine* delay_line, double* x, double* y, int buffer_size){
+void apply_delay_line(DelayLine* delay_line, data_t* x, data_t* y, int buffer_size){
     //apply the delay line to a signal
     for (int i=0; i<buffer_size; i++){
         if(i < delay_line->delay){

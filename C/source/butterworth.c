@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+
 #include "butterworth.h"
 #include "utils.h"
 #include "iir.h"
@@ -24,7 +25,7 @@ void reset_butterworth(Butterworth* butterworth){
     reset_IIR(butterworth->iir);
 }
 
-void filter_butterworth(Butterworth* butterworth, double* x, double* y, int buffer_size){
+void filter_butterworth(Butterworth* butterworth, data_t* x, data_t* y, int buffer_size){
     //filter the signal using the IIR filter
     filter_IIR(butterworth->iir, x, y, buffer_size);
 }

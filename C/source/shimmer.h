@@ -5,11 +5,6 @@
 #include "butterworth.h"
 #include "delay_line.h"
 #include "utils.h"
-//-----------------------------------------------------------------
-//macros declarations
-//-----------------------------------------------------------------
-
-
 
 //-----------------------------------------------------------------
 //structures delcarations
@@ -42,7 +37,7 @@ typedef struct {
     DelayLine *delay_line1;
     DelayLine *delay_line2;
     Parameters *parameters;
-    double* feedback_buf;
+    data_t* feedback_buf;
 } Shimmer;
 
 //-----------------------------------------------------------------
@@ -81,7 +76,7 @@ void reset_shimmer(Shimmer* shimmer);
  * 
  * @return void
 */
-void apply_shimmer(Shimmer* shimmer, double* x, double* y, int buffer_size);
+void apply_shimmer(Shimmer* shimmer, data_t* x, data_t* y, int buffer_size);
 
 /**
  * @brief Free the memory allocated by the shimmer effect

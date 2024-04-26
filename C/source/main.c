@@ -3,14 +3,12 @@
 #include <portaudio.h>
 
 #include "utils.h"
-#include "schroeder_reverberator.h"
-
+#include "shimmer.h"
+#include "audio.h"
 
 int main(int argc, char* argv[]) {
     //ask the user for the parameters
-    Parameters params = getUserParameters();
-
-    Schroeder_reverberator *reverb = init_schroeder(params.size, params.diffusion);
+    test_audio_devices();
 
     return 0;
 }

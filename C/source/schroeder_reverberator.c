@@ -38,20 +38,6 @@ Schroeder_reverberator *init_schroeder(double size, double diffusion){
         d_c[i] = basic_delays_c[i] + shift_delay;
     }
 
-    printf("All-pass gains: ");
-    for (int i = 0; i < 9; i++)
-        printf("%f ", g_ap[i]);
-    printf("\nAll-pass delays: ");
-    for (int i = 0; i < 9; i++)
-        printf("%f ", d_ap[i]);
-    printf("\nComb filter gains: ");
-    for (int i = 0; i < 4; i++)
-        printf("%f ", g_c[i]);
-    printf("\nComb filter delays: ");
-    for (int i = 0; i < 4; i++)
-        printf("%f ", d_c[i]);
-
-    //------------------------------------
     //create the all pass filters
     IIR* allpasses[N_ap];
     for(int i = 0; i < N_ap; i++){
@@ -82,10 +68,10 @@ void reset_schroeder(Schroeder_reverberator* schroeder){
     }
 }
 
-void filter_schroeder(Schroeder_reverberator* schroeder, double* x, double* y, int buffer_size){
+void filter_schroeder(Schroeder_reverberator* schroeder, data_t* x, data_t* y, int buffer_size){
     //temporary variables
-    double reverb_wet[buffer_size];
-    double temp[buffer_size];
+    data_t reverb_wet[buffer_size];
+    data_t temp[buffer_size];
 
     //apply the comb_filters in parallel
     for(int i = 0; i < schroeder->n_c; i++){
@@ -103,7 +89,7 @@ void filter_schroeder(Schroeder_reverberator* schroeder, double* x, double* y, i
     }
     //mix the wet and dry signals
     for(int i = 0; i < buffer_size; i++){
-        y[i] = schroeder->wet*x[i] + (1-schroeder->wet)*y[i];
+        y[i] = (data_t)(schroeder->wet*x[i] + (1-schroeder->wet)*y[i]);
     }
 }
 

@@ -1,11 +1,7 @@
 #ifndef GS_PITCHSHIFT_H
 #define GS_PITCHSHIFT_H
-//-----------------------------------------------------------------
-//macros declarations
-//-----------------------------------------------------------------
 
-
-
+#include "utils.h"
 //-----------------------------------------------------------------
 //structures delcarations
 //-----------------------------------------------------------------
@@ -14,36 +10,30 @@
  * 
  * @param shift_factor The pitch shift factor.
  * 
- * @param grain_size The grain size.
- * 
- * @param fade The fade.
- * 
  * @param input_size The input number of sample to make GRAIN_SIZE grains
- * 
- * @param jump The jump we have to make to correctly overlap our grains.
- * 
- * @param overlap The number of samples that will be overlaped between two grains.
- * 
+ *   
  * @param win The window.
  * 
  * @param input_buf The internal input buffer.
  * 
+ * @param len_input_buf The length of the input buffer.
+ * 
  * @param output_buf The internal output buffer.
  * 
- * @param last_grain The last grain stored.
+ * @param len_output_buf The length of the output buffer.
+ * 
+ * @param last_grain The last grain stored
  * 
 */
 typedef struct {
-    int shift_factor;
-    int grain_size; 
-    double fade; 
+    double shift_factor;
     int input_size; 
-    int jump; 
-    int overlap;
     double* win;
-    double* input_buf;
-    double* output_buf;
-    double* last_grain;
+    data_t* input_buf;
+    int len_input_buf; 
+    data_t* output_buf;
+    int len_output_buf; 
+    data_t* last_grain;
 } GS_pitchshift;
 
 //-----------------------------------------------------------------
@@ -77,7 +67,7 @@ void reset_gs_pitchshift(GS_pitchshift* pitch_shifter);
  * 
  * @param buffer_size The size of the buffer.
 */
-void filter_gs_pitchshift(GS_pitchshift* pitch_shifter, double* x, double* y, int buffer_size);
+void filter_gs_pitchshift(GS_pitchshift* pitch_shifter, data_t* x, data_t* y, int buffer_size);
 
 /**
  * @brief Free the memory allocated by the pitch shifter

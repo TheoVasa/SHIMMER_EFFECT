@@ -61,7 +61,7 @@ void reset_butterworth(Butterworth* butterworth);
  * 
  * @return void
 */
-void filter_butterworth(Butterworth* butterworth, double* x, double* y, int buffer_size);
+void filter_butterworth(Butterworth* butterworth, data_t* x, data_t* y, int buffer_size);
 
 /**
  * @brief Free the memory allocated by the butterworth filter
