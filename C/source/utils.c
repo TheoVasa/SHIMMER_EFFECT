@@ -104,6 +104,7 @@ double *generate_win(int size, double fade){
             win[i] = 1.0;
         }
     }
+    return win;
 }
 
 
