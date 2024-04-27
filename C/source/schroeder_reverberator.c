@@ -7,6 +7,12 @@
 #include "iir.h"
 
 Schroeder_reverberator *init_schroeder(double size, double diffusion){
+    //allocate memory
+    Schroeder_reverberator* schroeder = (Schroeder_reverberator*)malloc(sizeof(Schroeder_reverberator));
+    if (schroeder == NULL) {
+        fprintf(stderr, "Error: Failed to allocate memory for Schroeder_reverberator\n");
+        exit(EXIT_FAILURE);
+    }
 
     //compute the parameters of the reverb 
     //------------------------------------
@@ -48,8 +54,8 @@ Schroeder_reverberator *init_schroeder(double size, double diffusion){
     for(int i = 0; i < N_C; i++){
         combs[i] = generate_comb(g_c[i], d_c[i]);
     }
-    //create the struct
-    Schroeder_reverberator* schroeder = (Schroeder_reverberator*)malloc(sizeof(Schroeder_reverberator));
+
+    //init the components of the reverberator
     schroeder->allpasses = allpasses;
     schroeder->combs = combs;
     schroeder->n_ap = N_ap;

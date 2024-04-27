@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -20,11 +21,25 @@ GS_pitchshift* init_gs_pitchshift(int shift_factor){
     //input buffer
     pitch_shifter->len_input_buf = 0; 
     pitch_shifter->input_buf = (data_t*)malloc(MAX_LEN_BUF*sizeof(data_t));
+
     //output buffer
     pitch_shifter->len_output_buf = GRAIN_SIZE;
     pitch_shifter->output_buf = (data_t*)malloc(MAX_LEN_BUF*sizeof(data_t));
+
     //last grain stored
     pitch_shifter->last_grain = (data_t*)malloc(GRAIN_SIZE*sizeof(data_t));
+
+    //check if the memory allocation was successful
+    if(pitch_shifter == NULL || pitch_shifter->win == NULL || pitch_shifter->input_buf == NULL || pitch_shifter->output_buf == NULL || pitch_shifter->last_grain == NULL){
+        fprintf(stderr, "Error: Failed to allocate memory for pitch shifter\n");
+        free(pitch_shifter->win);
+        free(pitch_shifter->input_buf);
+        free(pitch_shifter->output_buf);
+        free(pitch_shifter->last_grain);
+        free(pitch_shifter);
+        exit(EXIT_FAILURE);
+    }
+
     return pitch_shifter;
 
 }

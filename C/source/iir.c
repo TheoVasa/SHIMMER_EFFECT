@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -7,12 +8,22 @@
 IIR *init_IIR(double* a, int M, double* b, int N){
     //initialize the IIR filter
     IIR* iir = (IIR*)malloc(sizeof(IIR));
+    iir->xbuf = (data_t*)malloc(M*sizeof(data_t));
+    iir->ybuf = (data_t*)malloc(N*sizeof(data_t));
+    //check if memory allocation was successful
+    if(iir == NULL || iir->xbuf == NULL || iir->ybuf == NULL){
+        fprintf(stderr, "Error: Failed to allocate memory for IIR filter\n");
+        free(iir->xbuf);
+        free(iir->ybuf);
+        free(iir);
+        exit(EXIT_FAILURE);
+    }
+    //initialize the coefficients 
     iir->a = a;
     iir->M = M;
     iir->b = b;
     iir->N = N;
-    iir->xbuf = (data_t*)malloc(M*sizeof(data_t));
-    iir->ybuf = (data_t*)malloc(N*sizeof(data_t));
+    
     return iir;
 }
 

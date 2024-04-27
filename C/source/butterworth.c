@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "butterworth.h"
 #include "utils.h"
@@ -10,6 +11,14 @@ Butterworth *init_butterworth(int type, double fc){
     Butterworth* butterworth = (Butterworth*)malloc(sizeof(Butterworth));
     double *a = (double*)malloc(ORDER*sizeof(double));
     double *b = (double*)malloc(ORDER*sizeof(double));  
+    //check if memory allocation was successful
+    if (butterworth == NULL || a == NULL || b == NULL) {
+        fprintf(stderr, "Error: Failed to allocate memory for butterworth filter\n");
+        free(butterworth);
+        free(a);
+        free(b);
+        exit(EXIT_FAILURE);   
+    }
     //compute the coefficients of the butterworth filter
     if(type == LOWPASS){
         //TODO compute the coefficients of the low-pass butterworth filter

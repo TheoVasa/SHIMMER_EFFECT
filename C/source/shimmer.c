@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h> 
+#include <stdio.h>
 
 #include "shimmer.h"
 #include "schroeder_reverberator.h"
@@ -10,6 +11,14 @@
 
 Shimmer* init_shimmer(Parameters *parameters){
     Shimmer* shimmer = (Shimmer*)malloc(sizeof(Shimmer));
+    shimmer->feedback_buf = (data_t*)malloc(sizeof(data_t));
+    //check if memory allocation was successful
+    if(shimmer == NULL || shimmer->feedback_buf == NULL){
+        fprintf(stderr, "Error: Failed to allocate memory for shimmer\n");
+        free(shimmer->feedback_buf);
+        free(shimmer);
+        exit(EXIT_FAILURE);
+    }
 
     //initialize the components of the shimmer effect
     shimmer->pitch_shifter = init_gs_pitchshift(parameters->shift);
@@ -19,7 +28,7 @@ Shimmer* init_shimmer(Parameters *parameters){
     shimmer->lowpass = init_butterworth(LOWPASS, parameters->lowcut);
     shimmer->highpass = init_butterworth(HIGHPASS, parameters->highcut);
     shimmer->parameters = parameters;
-    shimmer->feedback_buf = (data_t*)malloc(sizeof(data_t));
+
     return shimmer;
 }
 

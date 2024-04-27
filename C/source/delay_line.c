@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 #include "delay_line.h"
 #include "utils.h"
@@ -8,40 +10,33 @@ DelayLine* init_delay_line(int delay){
     DelayLine* delay_line = (DelayLine*)malloc(sizeof(DelayLine));
     delay_line->delay = delay;
     delay_line->buffer = (data_t*)malloc(delay*sizeof(data_t));
+
+    //check if memory allocation was successful
+    if(delay_line->buffer == NULL || delay_line == NULL){
+        fprintf(stderr, "Error: Failed to allocate memory for delay line\n");
+        free(delay_line->buffer);
+        free(delay_line);
+        exit(EXIT_FAILURE);
+    }
     return delay_line;
 }
 
 void reset_delay_line(DelayLine* delay_line){
     //reset the internal buffers of the delay line
-    for(int i = 0; i < delay_line->delay; i++){
-        delay_line->buffer[i] = 0;
-    }
+    memset(delay_line->buffer, 0, delay_line->delay * sizeof(data_t));
 }
 
 void apply_delay_line(DelayLine* delay_line, data_t* x, data_t* y, int buffer_size){
     //apply the delay line to a signal
-    for (int i=0; i<buffer_size; i++){
-        if(i < delay_line->delay){
-            y[i] = delay_line->buffer[i];
-        } else {
-            y[i] = x[i-delay_line->delay];
-        }
-    }
-    //update the internal buffer of the delay line
-    for(int i = 0; i < delay_line->delay; i++){
-        int index = i + buffer_size; 
-        if(index < delay_line->delay){
-            delay_line->buffer[i] = delay_line->buffer[index];
-        } else {
-            delay_line->buffer[i] = x[index-delay_line->delay];
-        }
-    }
-}
+    memcpy(y, delay_line->buffer, delay_line->delay * sizeof(data_t));
+    memcpy(y + delay_line->delay, x, (buffer_size - delay_line->delay) * sizeof(data_t));
 
+    //update the internal buffer of the delay line
+    memcpy(delay_line->buffer, x + buffer_size - delay_line->delay, delay_line->delay * sizeof(data_t));
+}
 
 void free_delay_line(DelayLine* delay_line){
     //free the memory allocated for the delay line
     free(delay_line->buffer);
     free(delay_line);
 }
-
