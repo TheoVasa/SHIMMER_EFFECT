@@ -1,7 +1,7 @@
 CFLAGS = -Wall -std=c99 -g
 CC = gcc
 #library directory 
-LDFLAGS = -I/c/msys64/ucrt64/include -L/c/msys64/ucrt64/lib -llibportaudio
+LDFLAGS = -I/c/msys64/ucrt64/include -L/c/msys64/ucrt64/lib -llibportaudio -ltinywav
 
 # Define project directories
 SOURCE_DIR = source
@@ -19,10 +19,10 @@ HEADERS := $(wildcard $(SOURCE_DIR)/*.h)
 OBJS := $(patsubst $(SOURCE_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 
 # Define targets
-all: $(OUT_NAME) 
+all: copy_audio $(OUT_NAME) 
 
 # Rule to build the executable
-$(OUT_NAME): $(OBJS)
+$(OUT_NAME): $(OBJS) 
 	$(CC) $(CFLAGS) $(LIB_INC) $(LIB_DIR) $^ -o $@ $(LDFLAGS)
 
 # Rule to compile C source files into object files

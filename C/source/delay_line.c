@@ -27,12 +27,14 @@ void reset_delay_line(DelayLine* delay_line){
 }
 
 void apply_delay_line(DelayLine* delay_line, data_t* x, data_t* y, int buffer_size){
-    //apply the delay line to a signal
-    memcpy(y, delay_line->buffer, delay_line->delay * sizeof(data_t));
-    memcpy(y + delay_line->delay, x, (buffer_size - delay_line->delay) * sizeof(data_t));
-
-    //update the internal buffer of the delay line
-    memcpy(delay_line->buffer, x + buffer_size - delay_line->delay, delay_line->delay * sizeof(data_t));
+    //append the internal buffer and the input to a temporary buffer
+    data_t buf_temp[buffer_size + delay_line->delay];
+    memcpy(buf_temp, delay_line->buffer, delay_line->delay * sizeof(data_t));
+    memcpy(buf_temp + delay_line->delay, x, buffer_size * sizeof(data_t));
+    //write in output
+    memcpy(y, buf_temp, buffer_size * sizeof(data_t));
+    //update internal buffer 
+    memcpy(delay_line->buffer, buf_temp + buffer_size, delay_line->delay * sizeof(data_t));
 }
 
 void free_delay_line(DelayLine* delay_line){

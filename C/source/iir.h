@@ -27,7 +27,7 @@ typedef struct {
     double* b;
     int N;
     data_t* xbuf;
-    data_t* ybuf;    
+    data_t* ybuf;  
 } IIR;
 
 //-----------------------------------------------------------------

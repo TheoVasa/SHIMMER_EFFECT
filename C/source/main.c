@@ -7,8 +7,14 @@
 #include "audio.h"
 
 int main(int argc, char* argv[]) {
-    //ask the user for the parameters
-    test_audio_devices();
+    //get user parameters and init the shimmer
+    Parameters params = getUserParameters();
+    Shimmer* shimmer = init_shimmer(&params);
 
+    //start the audio process 
+    audio_process(params.mode, shimmer);
+
+    //free the allocated memory for the shimmer 
+    free_shimmer(shimmer);
     return 0;
 }

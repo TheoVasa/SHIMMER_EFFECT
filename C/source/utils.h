@@ -1,8 +1,24 @@
 #ifndef UTILS_H
 #define UTILS_H
+
+#include "portaudio.h"
 //-----------------------------------------------------------------
 //macros declarations
 //-----------------------------------------------------------------
+
+/**
+ * project parameters
+*/
+#define PATH_TO_INPUT_FILE "./audio/VOX.wav"
+#define PATH_TO_OUTPUT_FILE "./audio/output.wav"
+#define MODES {"real-time", "record", "play-back"}
+
+//shimmer parameters template (used to run without specifying all the parameters)
+#define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=13000,.highcut=100,.mix=0.4,.feedback=0.05,.shift=12,.size=0.5,.diffusion=5}
+//the dry/wet ratio of the reverberator
+#define WET_REVERB 1.0
+//the dry/wet ratio of the pitcher
+#define PITCH_RATIO 0.3
 
 /**
  * audio parameters
@@ -10,9 +26,11 @@
 //the sample rate
 #define SAMPLE_RATE 44100
 //the buffer size
-#define BUFFER_SIZE (64)
+#define BUFFER_SIZE (1024)
 //the maximum buffer size 
 #define MAX_BUFFER_SIZE (4098)
+//the number of channels
+#define NUM_CHANNELS (1)
 //sample type 
 #define data_t float
 
@@ -64,14 +82,6 @@
 #define ORDER 4
 
 /**
- * template for the internal shimmer parameters
- */
-//the dry/wet ratio of the reverberator
-#define WET_REVERB 0.4 
-//the dry/wet ratio of the pitcher
-#define PITCH_RATIO 0.2 
-
-/**
  * Useful macros
 */
 //maximum of two numbers
@@ -110,6 +120,24 @@ typedef struct {
     float size;
     float diffusion;
 } Parameters;
+
+/**
+ * @brief represent the data structure for the shimmer effect
+ * 
+ * @param frameIndex The index of the current frame
+ * 
+ * @param maxFrameIndex The maximum index of the frame
+ * 
+ * @param samples The samples
+*/
+typedef struct
+{
+    int          frameIndex;  /* Index into sample array. */
+    int          maxFrameIndex;
+    data_t      *samples;
+}
+paData;
+
 
 
 //-----------------------------------------------------------------

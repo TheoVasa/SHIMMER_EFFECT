@@ -8,8 +8,8 @@
 IIR *init_IIR(double* a, int M, double* b, int N){
     //initialize the IIR filter
     IIR* iir = (IIR*)malloc(sizeof(IIR));
-    iir->xbuf = (data_t*)malloc(M*sizeof(data_t));
-    iir->ybuf = (data_t*)malloc(N*sizeof(data_t));
+    iir->xbuf = (data_t*)malloc((N+MAX_BUFFER_SIZE)*sizeof(data_t));
+    iir->ybuf = (data_t*)malloc((M+MAX_BUFFER_SIZE)*sizeof(data_t));
     //check if memory allocation was successful
     if(iir == NULL || iir->xbuf == NULL || iir->ybuf == NULL){
         fprintf(stderr, "Error: Failed to allocate memory for IIR filter\n");
@@ -29,37 +29,32 @@ IIR *init_IIR(double* a, int M, double* b, int N){
 
 void reset_IIR(IIR* iir){
     //reset the internal buffers of the IIR filter
-    memset(iir->xbuf, 0, iir->M * sizeof(data_t));
-    memset(iir->ybuf, 0, iir->N * sizeof(data_t));
+    memset(iir->xbuf, 0, (iir->N+MAX_BUFFER_SIZE) * sizeof(data_t));
+    memset(iir->ybuf, 0, (iir->M+MAX_BUFFER_SIZE) * sizeof(data_t));
 }
 
 void filter_IIR(IIR* iir, data_t* x, data_t* y, int buffer_size){
-    data_t x_temp[iir->M + buffer_size]; 
-    data_t y_temp[iir->N + buffer_size];
-
-    //append internal buffer and input/output to temporary buffers
-    memcpy(x_temp, iir->xbuf, iir->M * sizeof(data_t));
-    memcpy(x_temp + iir->M, x, buffer_size * sizeof(data_t));
-
-    memcpy(y_temp, iir->ybuf, iir->N * sizeof(data_t));
-    memcpy(y_temp + iir->N, y, buffer_size * sizeof(data_t));
+    //append input to internal buffer
+    memcpy(iir->xbuf+iir->N, x, buffer_size * sizeof(data_t));
+    //append zeros to output buffer
+    memset(iir->ybuf+iir->M, 0, buffer_size * sizeof(data_t)); 
 
     //filter the signal using difference equation of the filter
     for(int i = 0; i < buffer_size; i++){
-        y_temp[i+iir->M] = 0;
-        for(int j = i; j < i + iir->N; j++){
-            y_temp[i+iir->M] += (data_t)(iir->b[j-i]*x_temp[j]);
+        y[i] = 0; 
+        for(int j = 0; j < iir->N; j++){
+            y[i] += (data_t)(iir->b[j] * (double)iir->xbuf[i + j]);
         }
-        for(int j = i; j < i + iir->M; j++){
-            y_temp[i+iir->M] -= (data_t)(iir->a[j-i]*y_temp[j]);
+        for(int j = 0; j < iir->M; j++){
+            y[i] -= (data_t)(iir->a[j] * (double)iir->ybuf[i + j]);
         }
     }
-    //write on output 
-    memcpy(y, y_temp + iir->M, buffer_size * sizeof(data_t));
 
     //update internal buffers
-    memcpy(iir->xbuf, x_temp + buffer_size, iir->M * sizeof(data_t));
-    memcpy(iir->ybuf, y_temp + buffer_size, iir->N * sizeof(data_t));
+    if(iir->N > 0){
+    memmove(iir->xbuf, iir->xbuf + buffer_size, iir->N * sizeof(data_t));
+    } 
+    memmove(iir->ybuf, iir->ybuf + buffer_size, iir->M * sizeof(data_t));
 }
 
 

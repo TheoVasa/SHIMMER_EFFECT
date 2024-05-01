@@ -45,12 +45,12 @@ Schroeder_reverberator *init_schroeder(double size, double diffusion){
     }
 
     //create the all pass filters
-    IIR* allpasses[N_ap];
+    IIR **allpasses = (IIR**)malloc(N_ap*sizeof(IIR*)); 
     for(int i = 0; i < N_ap; i++){
         allpasses[i] = generate_allpass(g_ap[i], d_ap[i]);
     }
     //create the comb filters
-    IIR* combs[N_C];
+    IIR **combs = (IIR**)malloc(N_C*sizeof(IIR*));
     for(int i = 0; i < N_C; i++){
         combs[i] = generate_comb(g_c[i], d_c[i]);
     }
@@ -80,22 +80,21 @@ void filter_schroeder(Schroeder_reverberator* schroeder, data_t* x, data_t* y, i
     data_t temp[buffer_size];
 
     //apply the comb_filters in parallel
-    for(int i = 0; i < schroeder->n_c; i++){
+    for(int i = 0; i < schroeder->n_c; i++){ 
         filter_IIR(schroeder->combs[i], x, temp, buffer_size);
         for(int j = 0; j < buffer_size; j++){
-            reverb_wet[j] += temp[j];
+            reverb_wet[j] += (1/schroeder->n_c)*temp[j];
         }
     }
+    /**
     //apply the all-pass filters in series
     for(int i = 0; i < schroeder->n_ap; i++){
-        filter_IIR(schroeder->allpasses[i], reverb_wet, temp, buffer_size);
-        for(int j = 0; j < buffer_size; j++){
-            reverb_wet[j] = temp[j];
-        }
+        filter_IIR(schroeder->allpasses[i], reverb_wet, reverb_wet, buffer_size);
     }
+    **/
     //mix the wet and dry signals
     for(int i = 0; i < buffer_size; i++){
-        y[i] = (data_t)(schroeder->wet*x[i] + (1-schroeder->wet)*y[i]);
+        y[i] = (data_t)(schroeder->wet*(double)reverb_wet[i] + (1-schroeder->wet)*(double)x[i]);
     }
 }
 
@@ -108,6 +107,8 @@ void free_schroeder(Schroeder_reverberator* schroeder){
         free_IIR(schroeder->combs[i]);
     }
     //free the struct
+    free(schroeder->allpasses);
+    free(schroeder->combs);
     free(schroeder); 
 }
 

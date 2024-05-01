@@ -6,57 +6,74 @@
 #include "utils.h"
 
 Parameters getUserParameters(void) {
-    Parameters params;
-    //mode
+    Parameters params; 
+    char mode[20];
+
+    //ask for the mode 
     printf("Enter mode (real-time, play-back, or record): ");
-    scanf("%s", params.mode);
-    while (strcmp(params.mode, "real-time") != 0 && strcmp(params.mode, "play-back") != 0 && strcmp(params.mode, "record") != 0) {
+    scanf("%s", mode);
+    while (strcmp(mode, "real-time") != 0 && strcmp(mode, "play-back") != 0 && strcmp(mode, "record") != 0) {
         printf("Invalid mode. Please enter real-time, play-back, or record: ");
-        scanf("%s", params.mode);
+        scanf("%s", mode);
     }
-    //mix
+    //ask if we want to use the default parameters
+    printf("Do you want to use default parameters for the shimmer ? [y/n]\n"); 
+    char answer[10];
+    scanf("%s", answer);
+    if(strcmp(answer, "y") == 0){
+        
+        params = DEFAULT_PARAMS; 
+        strcpy(params.mode, mode);
+
+        goto recap;
+    }
+
+    //initialize the parameters according to user 
+    strcpy(params.mode, mode);
+
+    //the mix
     printf("Enter mix value (between 0 and 1): ");
     scanf("%f", &params.mix);
     while (params.mix < 0 || params.mix > 1) {
         printf("Invalid mix value. Please enter a value between 0 and 1: ");
         scanf("%f", &params.mix);
     }
-    //highcut
+    //the highcut
     printf("Enter highcut value (between 1 and 20000): ");
     scanf("%f", &params.highcut);
     while (params.highcut < 1 || params.highcut > 20000) {
         printf("Invalid highcut value. Please enter a value between 1 and 20000: ");
         scanf("%f", &params.highcut);
     }
-    //lowcut
+    //the lowcut
     printf("Enter lowcut value (between 1 and 20000): ");
     scanf("%f", &params.lowcut);
     while (params.lowcut < 1 || params.lowcut > 20000) {
         printf("Invalid highcut value. Please enter a value between 1 and 20000: ");
         scanf("%f", &params.lowcut);
     }
-    //feedback
+    //the feedback
     printf("Enter feedback value (between 0 and 0.1): ");
     scanf("%f", &params.feedback);
     while (params.feedback < 0 || params.feedback > 0.1) {
         printf("Invalid feedback value. Please enter a value between 0 and 0.1: ");
         scanf("%f", &params.feedback);
     }
-    //shift
+    //the shift
     printf("Enter shift value (between -12 and 12): ");
     scanf("%f", &params.shift);
     while (params.shift < -12 || params.shift > 12) {
         printf("Invalid shift value. Please enter a value between -12 and 12: ");
         scanf("%f", &params.shift);
     }
-    //size
+    //the size
     printf("Enter size value (between 0 and 1): ");
     scanf("%f", &params.size);
     while (params.size < 0 || params.size > 1) {
         printf("Invalid size value. Please enter a value between 0 and 1: ");
         scanf("%f", &params.size);
     }
-    //diffusion
+    //the diffusion
     printf("Enter diffusion value (between 0 and 10): ");
     scanf("%f", &params.diffusion);
     while (params.diffusion < 0 || params.diffusion > 10) {
@@ -64,12 +81,12 @@ Parameters getUserParameters(void) {
         scanf("%f", &params.diffusion);
     }
 
+    //recap of the parameters
+    recap : 
     //clean the output
     system("cls"); 
-
-    //recap of the parameters
     printf("Mode: %s\n", params.mode);
-    printf("=== PARAMETERS ===\n"); 
+    printf("========= PARAMETERS =======\n"); 
     printf("Mix: %.2f\n", params.mix);
     printf("Shift: %.2f\n", params.shift); 
     printf("Feedback: %.2f\n", params.feedback);
@@ -77,7 +94,6 @@ Parameters getUserParameters(void) {
     printf("Diffusion: %.2f\n", params.diffusion);
     printf("Lowcut: %.2f\n", params.lowcut);
     printf("Highcut: %.2f\n", params.highcut);
-    printf("==================\n"); 
 
     return params;
 }

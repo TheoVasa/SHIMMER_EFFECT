@@ -44,15 +44,19 @@ void reset_shimmer(Shimmer* shimmer){
 }
 
 void apply_shimmer(Shimmer* shimmer, data_t* x, data_t* y, int buffer_size){
+    filter_schroeder(shimmer->reverberator, x, y, buffer_size);
+    /**
+     
     data_t y_temp[buffer_size + 1];
     //append data into the temp buffer
     memcpy(y_temp, shimmer->feedback_buf, sizeof(data_t));
     memcpy(y_temp + 1, x, buffer_size * sizeof(data_t));
+    
 
     for(int i=0; i<buffer_size; i++){
         //mix feedback with input given the ratio
         data_t out = (data_t)(shimmer->parameters->feedback*x[i] + (1-shimmer->parameters->feedback)*y[i]);
-        //apply the reverb
+        //apply the reverb 
         filter_schroeder(shimmer->reverberator, &out, &out, 1); 
         //apply the pitch shifter
         data_t pitch; 
@@ -79,6 +83,8 @@ void apply_shimmer(Shimmer* shimmer, data_t* x, data_t* y, int buffer_size){
     for(int i=0; i<buffer_size; i++){
         y[i] = (data_t)(1-shimmer->parameters->mix)*x[i] + shimmer->parameters->mix*y[i];
     }
+
+    **/
 }
 
 void free_shimmer(Shimmer* shimmer){
@@ -86,7 +92,7 @@ void free_shimmer(Shimmer* shimmer){
     free_gs_pitchshift(shimmer->pitch_shifter);
     free_schroeder(shimmer->reverberator);
     free_delay_line(shimmer->delay_line1);
-    free_delay_line(shimmer->delay_line1);
+    free_delay_line(shimmer->delay_line2);
     free_butterworth(shimmer->lowpass);
     free_butterworth(shimmer->highpass);
     free(shimmer->parameters);

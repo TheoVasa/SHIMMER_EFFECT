@@ -23,7 +23,7 @@ GS_pitchshift* init_gs_pitchshift(int shift_factor){
     pitch_shifter->input_buf = (data_t*)malloc(MAX_LEN_BUF*sizeof(data_t));
 
     //output buffer
-    pitch_shifter->len_output_buf = GRAIN_SIZE;
+    pitch_shifter->len_output_buf = pitch_shifter->input_size;
     pitch_shifter->output_buf = (data_t*)malloc(MAX_LEN_BUF*sizeof(data_t));
 
     //last grain stored
@@ -56,14 +56,15 @@ void reset_gs_pitchshift(GS_pitchshift* pitch_shifter){
 void filter_gs_pitchshift(GS_pitchshift* pitch_shifter, data_t* x, data_t* y, int buffer_size){
     //append input to internal input buffer 
     if(pitch_shifter->len_input_buf + buffer_size > MAX_LEN_BUF){
-        //the buffer is full
-        printf("Input buffer is full\n");
+        fprintf(stderr, "Error: internal input buffer of pitchshift is full ! \n");
+        exit(EXIT_FAILURE);
+
     } else {
         memcpy(pitch_shifter->input_buf+pitch_shifter->len_input_buf, x, buffer_size*sizeof(data_t));
         pitch_shifter->len_input_buf += buffer_size;
     }
 
-    while (pitch_shifter->len_input_buf >= MAX(pitch_shifter->input_size, GRAIN_SIZE)){
+    while (pitch_shifter->len_input_buf >= MAX(pitch_shifter->input_size, GRAIN_SIZE)){ 
         //get a grain
         data_t temp_grain[pitch_shifter->input_size];
         data_t grain[GRAIN_SIZE];
@@ -82,8 +83,9 @@ void filter_gs_pitchshift(GS_pitchshift* pitch_shifter, data_t* x, data_t* y, in
         //append it to the output buffer 
        
         if (pitch_shifter->len_output_buf + JUMP > MAX_LEN_BUF) {
-            // the buffer is full
-            printf("Output buffer is full\n");
+            fprintf(stderr, "Error: internal output buffer of pitchshift is full ! \n");
+            exit(EXIT_FAILURE);
+
         } else {
             memcpy(pitch_shifter->output_buf + pitch_shifter->len_output_buf, grain, JUMP*sizeof(data_t));
             pitch_shifter->len_output_buf += JUMP;
@@ -93,14 +95,15 @@ void filter_gs_pitchshift(GS_pitchshift* pitch_shifter, data_t* x, data_t* y, in
         memcpy(pitch_shifter->last_grain, grain, GRAIN_SIZE*sizeof(data_t));
 
         //update input buffer
-        memcpy(pitch_shifter->input_buf, pitch_shifter->input_buf+JUMP, (pitch_shifter->len_input_buf-JUMP)*sizeof(data_t));
+        memmove(pitch_shifter->input_buf, pitch_shifter->input_buf+JUMP, (pitch_shifter->len_input_buf-JUMP)*sizeof(data_t));
         pitch_shifter->len_input_buf -= JUMP;
     }
     //write result to output
     memcpy(y, pitch_shifter->output_buf, buffer_size*sizeof(data_t));
     //update output buffer
-    memcpy(pitch_shifter->output_buf, pitch_shifter->output_buf+buffer_size, (pitch_shifter->len_output_buf-buffer_size)*sizeof(data_t));
+    memmove(pitch_shifter->output_buf, pitch_shifter->output_buf+buffer_size, (pitch_shifter->len_output_buf-buffer_size)*sizeof(data_t));
     pitch_shifter->len_output_buf -= buffer_size;
+    
 }
 
 void free_gs_pitchshift(GS_pitchshift* pitch_shifter){
