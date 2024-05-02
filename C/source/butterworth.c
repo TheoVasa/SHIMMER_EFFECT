@@ -9,8 +9,8 @@
 Butterworth *init_butterworth(int type, double fc){
     //initialize the butterworth filter
     Butterworth* butterworth = (Butterworth*)malloc(sizeof(Butterworth));
-    double *a = (double*)malloc(ORDER*sizeof(double));
-    double *b = (double*)malloc(ORDER*sizeof(double));  
+    Coefficients *a = (Coefficients*)malloc(sizeof(Coefficients)); 
+    Coefficients *b = (Coefficients*)malloc(sizeof(Coefficients));
     //check if memory allocation was successful
     if (butterworth == NULL || a == NULL || b == NULL) {
         fprintf(stderr, "Error: Failed to allocate memory for butterworth filter\n");
@@ -25,7 +25,7 @@ Butterworth *init_butterworth(int type, double fc){
     } else {
         //TODO compute the coefficients of the high-pass butterworth
     }
-    butterworth->iir = init_IIR(a, ORDER, b, ORDER);
+    butterworth->iir = init_IIR(a, b);
     return butterworth;
 }
 

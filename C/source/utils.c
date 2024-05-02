@@ -147,6 +147,10 @@ double pitch_factor(int shift){
     return pow(2, shift/12.0);
 }
 
+int is_equal(data_t x, data_t y){
+    return fabs(x-y) < 1e-6*fabsl(y);
+}
+
 
 
 

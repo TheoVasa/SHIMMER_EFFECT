@@ -16,5 +16,8 @@ int main(int argc, char* argv[]) {
 
     //free the allocated memory for the shimmer 
     free_shimmer(shimmer);
+
+    printf("Press <q> then <enter> to quit\n"); 
+    while(getchar() != 'q');
     return 0;
 }

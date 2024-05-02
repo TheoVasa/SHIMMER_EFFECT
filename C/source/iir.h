@@ -6,29 +6,43 @@
 //-----------------------------------------------------------------
 //structures delcarations
 //-----------------------------------------------------------------
+
+/**
+ * @brief represent the coefficients of the transfer function
+ * 
+ * @param index The index of the non-zeros coefficient.
+ * 
+ * @param val The value of the non-zeros coefficient.
+ * 
+ * @param N The number of non-zeros coefficients.
+ * 
+ * @param order The order of the filter.
+*/
+typedef struct {
+    int* index; 
+    double* val;
+    int N;
+    int order;
+} Coefficients;
+
 /**
  * @brief represent an IIR filter by it's transfer function coefficients
  * 
- * @param a The denominator coefficients of the transfer function.
- * 
- * @param M The order of the denominator.
+ *  @param a The denominator coefficients of the transfer function.
  * 
  * @param b The numerator coefficients of the transfer function.
- * 
- * @param N The order of the numerator.
  * 
  * @param xbuf The input buffer.
  * 
  * @param ybuf The output buffer.
 */
 typedef struct {
-    double* a; 
-    int M; 
-    double* b;
-    int N;
+    Coefficients *a; 
+    Coefficients *b;
     data_t* xbuf;
     data_t* ybuf;  
 } IIR;
+
 
 //-----------------------------------------------------------------
 //function declarations
@@ -39,15 +53,11 @@ typedef struct {
  * 
  * @param a The denominator coefficients of the transfer function.
  * 
- * @param M The order of the denominator.
- * 
  * @param b The numerator coefficients of the transfer function.
- * 
- * @param N The order of the numerator.
- * 
+ *  
  * @return The dynamic allocated IIR filter
 */
-IIR *init_IIR(double* a, int M, double* b, int N);
+IIR *init_IIR(Coefficients *a, Coefficients *b);
 
 /**
  * @brief Reset the IIR filter internal buffers

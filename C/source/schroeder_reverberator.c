@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "schroeder_reverberator.h"
 #include "utils.h"
@@ -77,25 +78,37 @@ void reset_schroeder(Schroeder_reverberator* schroeder){
 void filter_schroeder(Schroeder_reverberator* schroeder, data_t* x, data_t* y, int buffer_size){
     //temporary variables
     data_t reverb_wet[buffer_size];
-    data_t temp[buffer_size];
+    memset(reverb_wet, 0, buffer_size*sizeof(data_t));
+
+    
 
     //apply the comb_filters in parallel
     for(int i = 0; i < schroeder->n_c; i++){ 
+        data_t temp[buffer_size];
+        memset(temp, 0, buffer_size*sizeof(data_t));
         filter_IIR(schroeder->combs[i], x, temp, buffer_size);
         for(int j = 0; j < buffer_size; j++){
-            reverb_wet[j] += (1/schroeder->n_c)*temp[j];
+            reverb_wet[j] += (0.25)*temp[j];
         }
     }
     /**
     //apply the all-pass filters in series
     for(int i = 0; i < schroeder->n_ap; i++){
-        filter_IIR(schroeder->allpasses[i], reverb_wet, reverb_wet, buffer_size);
+        data_t temp[buffer_size];
+        memset(temp, 0, buffer_size*sizeof(data_t));
+        filter_IIR(schroeder->allpasses[i], reverb_wet, temp, buffer_size);
+        memcpy(reverb_wet, temp, buffer_size*sizeof(data_t));
     }
     **/
+    
     //mix the wet and dry signals
     for(int i = 0; i < buffer_size; i++){
-        y[i] = (data_t)(schroeder->wet*(double)reverb_wet[i] + (1-schroeder->wet)*(double)x[i]);
+        data_t wet = (data_t)schroeder->wet*reverb_wet[i]; 
+        data_t dry = (data_t)(1.0-schroeder->wet)*x[i];
+
+        y[i] = wet + dry; 
     }
+
 }
 
 void free_schroeder(Schroeder_reverberator* schroeder){
@@ -113,25 +126,76 @@ void free_schroeder(Schroeder_reverberator* schroeder){
 }
 
 IIR* generate_allpass(double gain, double delay){
+    Coefficients *a = (Coefficients*)malloc(sizeof(Coefficients));
+    Coefficients *b = (Coefficients*)malloc(sizeof(Coefficients));
     //compute the length in samples given the delay in ms
     int m = time_to_samples(delay); 
-    //the coefficients of the transfer function
-    double *a = (double*)malloc((m+1)*sizeof(double));  
-    double *b = (double*)malloc((m+1)*sizeof(double));
-    a[m] = -gain; 
-    b[0] = -gain; 
-    b[m] = 1; 
-    return init_IIR(a, m+1, b, m+1);
+    //init the memory needed to store the coefficients
+    a->order = m+1;   
+    b->order = m+1;
+    a->index = (int*)malloc(sizeof(int));
+    a->val = (double*)malloc(sizeof(double));
+    a->N = 1;
+    b->index = (int*)malloc(2*sizeof(int));
+    b->val = (double*)malloc(2*sizeof(double));
+    b->N = 2;
+    //check if memory allocation was successful
+    if(a == NULL || b == NULL || a->index == NULL || a->val == NULL || b->index == NULL || b->val == NULL){
+        fprintf(stderr, "Error: Failed to allocate memory for allpass filter\n");
+        free(a->index);
+        free(a->val);
+        free(b->index);
+        free(b->val);
+        free(a);
+        free(b);
+        exit(EXIT_FAILURE);
+    }
+    //set the coefficients
+    a->index[0] = m;
+    a->val[0] = -gain;
+    b->index[0] = 0;
+    b->val[0] = -gain;
+    b->index[1] = m;
+    b->val[1] = 1;
+
+    return init_IIR(a, b);
 }
 
 IIR* generate_comb(double gain, double delay){
+    Coefficients *a = (Coefficients*)malloc(sizeof(Coefficients));
+    Coefficients *b = (Coefficients*)malloc(sizeof(Coefficients));
     //compute the length in samples given the delay in ms
     int m = time_to_samples(delay); 
-    int n = 1; 
-    //the coefficients of the transfer function
-    double *a = (double*)malloc((m+1)*sizeof(double)); 
-    double *b = (double*)malloc((n)*sizeof(double));
-    a[m] = -gain; 
-    b[0] = 1; 
-    return init_IIR(a, m+1, b, n);
+    //init the memory needed to store the coefficients
+    a->order = m+1;   
+    b->order = 1;
+    a->index = (int*)malloc(sizeof(int));
+    a->val = (double*)malloc(sizeof(double));
+    a->N = 1;
+    b->index = (int*)malloc(sizeof(int));
+    b->val = (double*)malloc(sizeof(double));
+    b->N = 1;
+    //check if memory allocation was successful
+    if(a == NULL || b == NULL || a->index == NULL || a->val == NULL || b->index == NULL || b->val == NULL){
+        fprintf(stderr, "Error: Failed to allocate memory for comb filter\n");
+        free(a->index);
+        free(a->val);
+        free(b->index);
+        free(b->val);
+        free(a);
+        free(b);
+        exit(EXIT_FAILURE);
+    }
+    //set the coefficients
+    a->index[0] = m;
+    a->val[0] = -gain;
+    b->index[0] = 0;
+    b->val[0] = 1;
+    //print the values 
+    printf("a: %d %f\n", a->index[0], a->val[0]);
+    printf("b: %d %f\n", b->index[0], b->val[0]);
+
+
+    return init_IIR(a, b);
+
 }

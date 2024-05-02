@@ -66,8 +66,12 @@ void filter_gs_pitchshift(GS_pitchshift* pitch_shifter, data_t* x, data_t* y, in
 
     while (pitch_shifter->len_input_buf >= MAX(pitch_shifter->input_size, GRAIN_SIZE)){ 
         //get a grain
+        //temporary variables
         data_t temp_grain[pitch_shifter->input_size];
+        memset(temp_grain, 0, pitch_shifter->input_size*sizeof(data_t));
         data_t grain[GRAIN_SIZE];
+        memset(grain, 0, GRAIN_SIZE*sizeof(data_t));
+
         memcpy(temp_grain, pitch_shifter->input_buf, pitch_shifter->input_size*sizeof(data_t));
         //resample the grain
         resample(temp_grain, grain, pitch_shifter->input_size, GRAIN_SIZE, pitch_shifter->shift_factor);

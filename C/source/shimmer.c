@@ -48,6 +48,7 @@ void apply_shimmer(Shimmer* shimmer, data_t* x, data_t* y, int buffer_size){
     /**
      
     data_t y_temp[buffer_size + 1];
+    memset(y_temp, 0, (buffer_size + 1) * sizeof(data_t));
     //append data into the temp buffer
     memcpy(y_temp, shimmer->feedback_buf, sizeof(data_t));
     memcpy(y_temp + 1, x, buffer_size * sizeof(data_t));

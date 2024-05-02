@@ -16,7 +16,7 @@
 //shimmer parameters template (used to run without specifying all the parameters)
 #define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=13000,.highcut=100,.mix=0.4,.feedback=0.05,.shift=12,.size=0.5,.diffusion=5}
 //the dry/wet ratio of the reverberator
-#define WET_REVERB 1.0
+#define WET_REVERB 0.3
 //the dry/wet ratio of the pitcher
 #define PITCH_RATIO 0.3
 
@@ -202,6 +202,8 @@ void resample(data_t* x, data_t* y, int x_size, int y_size, double factor);
  * @return The shift factor
 */
 double pitch_factor(int shift); 
+
+int is_equal(data_t x, data_t y);
 
 #endif
 
