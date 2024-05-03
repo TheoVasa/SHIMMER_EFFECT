@@ -44,7 +44,7 @@ void reset_shimmer(Shimmer* shimmer){
 }
 
 void apply_shimmer(Shimmer* shimmer, data_t* x, data_t* y, int buffer_size){
-    filter_schroeder(shimmer->reverberator, x, y, buffer_size);
+    filter_gs_pitchshift(shimmer->pitch_shifter, x, y, buffer_size);
     /**
      
     data_t y_temp[buffer_size + 1];

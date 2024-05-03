@@ -20,11 +20,11 @@ GS_pitchshift* init_gs_pitchshift(int shift_factor){
     //internal buffers
     //input buffer
     pitch_shifter->len_input_buf = 0; 
-    pitch_shifter->input_buf = (data_t*)malloc(MAX_LEN_BUF*sizeof(data_t));
+    pitch_shifter->input_buf = (data_t*)malloc((MAX(pitch_shifter->input_size, GRAIN_SIZE) + MAX_LEN_BUF)*sizeof(data_t));
 
     //output buffer
-    pitch_shifter->len_output_buf = pitch_shifter->input_size;
-    pitch_shifter->output_buf = (data_t*)malloc(MAX_LEN_BUF*sizeof(data_t));
+    pitch_shifter->len_output_buf = MAX(pitch_shifter->input_size, GRAIN_SIZE);
+    pitch_shifter->output_buf = (data_t*)malloc((MAX(pitch_shifter->input_size, GRAIN_SIZE) + MAX_LEN_BUF)*sizeof(data_t));
 
     //last grain stored
     pitch_shifter->last_grain = (data_t*)malloc(GRAIN_SIZE*sizeof(data_t));
@@ -60,10 +60,12 @@ void filter_gs_pitchshift(GS_pitchshift* pitch_shifter, data_t* x, data_t* y, in
         exit(EXIT_FAILURE);
 
     } else {
+        
         memcpy(pitch_shifter->input_buf+pitch_shifter->len_input_buf, x, buffer_size*sizeof(data_t));
+        
         pitch_shifter->len_input_buf += buffer_size;
     }
-
+    
     while (pitch_shifter->len_input_buf >= MAX(pitch_shifter->input_size, GRAIN_SIZE)){ 
         //get a grain
         //temporary variables
@@ -94,7 +96,6 @@ void filter_gs_pitchshift(GS_pitchshift* pitch_shifter, data_t* x, data_t* y, in
             memcpy(pitch_shifter->output_buf + pitch_shifter->len_output_buf, grain, JUMP*sizeof(data_t));
             pitch_shifter->len_output_buf += JUMP;
         }
-
         //copy current grain into last grain
         memcpy(pitch_shifter->last_grain, grain, GRAIN_SIZE*sizeof(data_t));
 
@@ -104,8 +105,10 @@ void filter_gs_pitchshift(GS_pitchshift* pitch_shifter, data_t* x, data_t* y, in
     }
     //write result to output
     memcpy(y, pitch_shifter->output_buf, buffer_size*sizeof(data_t));
+    printf("coucou\n"); 
     //update output buffer
     memmove(pitch_shifter->output_buf, pitch_shifter->output_buf+buffer_size, (pitch_shifter->len_output_buf-buffer_size)*sizeof(data_t));
+    printf("coucou\n"); 
     pitch_shifter->len_output_buf -= buffer_size;
     
 }

@@ -78,37 +78,32 @@ void reset_schroeder(Schroeder_reverberator* schroeder){
 void filter_schroeder(Schroeder_reverberator* schroeder, data_t* x, data_t* y, int buffer_size){
     //temporary variables
     data_t reverb_wet[buffer_size];
-    memset(reverb_wet, 0, buffer_size*sizeof(data_t));
-
-    
+    memset(reverb_wet, 0.0, buffer_size*sizeof(data_t));
 
     //apply the comb_filters in parallel
     for(int i = 0; i < schroeder->n_c; i++){ 
         data_t temp[buffer_size];
-        memset(temp, 0, buffer_size*sizeof(data_t));
+        memset(temp, 0.0, buffer_size*sizeof(data_t));
         filter_IIR(schroeder->combs[i], x, temp, buffer_size);
         for(int j = 0; j < buffer_size; j++){
-            reverb_wet[j] += (0.25)*temp[j];
+            reverb_wet[j] += (1/(double)schroeder->n_c)*temp[j];
         }
     }
-    /**
+   
     //apply the all-pass filters in series
     for(int i = 0; i < schroeder->n_ap; i++){
         data_t temp[buffer_size];
-        memset(temp, 0, buffer_size*sizeof(data_t));
+        memset(temp, 0.0, buffer_size*sizeof(data_t));
         filter_IIR(schroeder->allpasses[i], reverb_wet, temp, buffer_size);
         memcpy(reverb_wet, temp, buffer_size*sizeof(data_t));
     }
-    **/
-    
-    //mix the wet and dry signals
+    memcpy(y, reverb_wet, buffer_size*sizeof(data_t)); 
+    //mix the wet and dry signals 
     for(int i = 0; i < buffer_size; i++){
         data_t wet = (data_t)schroeder->wet*reverb_wet[i]; 
         data_t dry = (data_t)(1.0-schroeder->wet)*x[i];
-
         y[i] = wet + dry; 
     }
-
 }
 
 void free_schroeder(Schroeder_reverberator* schroeder){
@@ -167,7 +162,7 @@ IIR* generate_comb(double gain, double delay){
     //compute the length in samples given the delay in ms
     int m = time_to_samples(delay); 
     //init the memory needed to store the coefficients
-    a->order = m+1;   
+    a->order = m;   
     b->order = 1;
     a->index = (int*)malloc(sizeof(int));
     a->val = (double*)malloc(sizeof(double));
@@ -191,11 +186,6 @@ IIR* generate_comb(double gain, double delay){
     a->val[0] = -gain;
     b->index[0] = 0;
     b->val[0] = 1;
-    //print the values 
-    printf("a: %d %f\n", a->index[0], a->val[0]);
-    printf("b: %d %f\n", b->index[0], b->val[0]);
-
 
     return init_IIR(a, b);
-
 }

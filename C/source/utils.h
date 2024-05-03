@@ -14,7 +14,7 @@
 #define MODES {"real-time", "record", "play-back"}
 
 //shimmer parameters template (used to run without specifying all the parameters)
-#define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=13000,.highcut=100,.mix=0.4,.feedback=0.05,.shift=12,.size=0.5,.diffusion=5}
+#define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=13000,.highcut=100,.mix=0.4,.feedback=0.05,.shift=-12,.size=0.5,.diffusion=5}
 //the dry/wet ratio of the reverberator
 #define WET_REVERB 0.3
 //the dry/wet ratio of the pitcher
@@ -61,9 +61,9 @@
  * template for the pitch shifter
  */
 //size of the grains
-#define GRAIN_SIZE 1024
+#define GRAIN_SIZE 2000
 //fade porcentage of the tapering window
-#define FADE 0.4
+#define FADE 0.8
 //the jump we have to make to correctly overlap our grains
 #define JUMP (int)(GRAIN_SIZE - GRAIN_SIZE*FADE/2.0)
 //the number of overlaped grains
