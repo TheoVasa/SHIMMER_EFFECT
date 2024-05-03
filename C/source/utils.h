@@ -14,7 +14,7 @@
 #define MODES {"real-time", "record", "play-back"}
 
 //shimmer parameters template (used to run without specifying all the parameters)
-#define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=13000,.highcut=100,.mix=0.4,.feedback=0.05,.shift=-12,.size=0.5,.diffusion=5}
+#define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=13000,.highcut=100,.mix=0.5,.feedback=0.03,.shift=12,.size=0.5,.diffusion=5}
 //the dry/wet ratio of the reverberator
 #define WET_REVERB 0.3
 //the dry/wet ratio of the pitcher
@@ -26,9 +26,9 @@
 //the sample rate
 #define SAMPLE_RATE 44100
 //the buffer size
-#define BUFFER_SIZE (1024)
+#define BUFFER_SIZE (256)
 //the maximum buffer size 
-#define MAX_BUFFER_SIZE (4098)
+#define MAX_BUFFER_SIZE (2048)
 //the number of channels
 #define NUM_CHANNELS (1)
 //sample type 
@@ -61,9 +61,9 @@
  * template for the pitch shifter
  */
 //size of the grains
-#define GRAIN_SIZE 2000
+#define GRAIN_SIZE (time_to_samples(75))
 //fade porcentage of the tapering window
-#define FADE 0.8
+#define FADE 0.5
 //the jump we have to make to correctly overlap our grains
 #define JUMP (int)(GRAIN_SIZE - GRAIN_SIZE*FADE/2.0)
 //the number of overlaped grains
@@ -112,13 +112,13 @@
 */
 typedef struct {
     char mode[20];
-    float lowcut;
-    float highcut;
-    float mix;
-    float feedback;
-    float shift;
-    float size;
-    float diffusion;
+    double lowcut;
+    double highcut;
+    double mix;
+    double feedback;
+    double shift;
+    double size;
+    double diffusion;
 } Parameters;
 
 /**

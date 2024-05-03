@@ -37,7 +37,7 @@ typedef struct {
     DelayLine *delay_line1;
     DelayLine *delay_line2;
     Parameters *parameters;
-    data_t* feedback_buf;
+    data_t feedback_buf;
 } Shimmer;
 
 //-----------------------------------------------------------------

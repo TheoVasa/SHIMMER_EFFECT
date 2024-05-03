@@ -33,52 +33,52 @@ Parameters getUserParameters(void) {
 
     //the mix
     printf("Enter mix value (between 0 and 1): ");
-    scanf("%f", &params.mix);
+    scanf("%lf", &params.mix);
     while (params.mix < 0 || params.mix > 1) {
         printf("Invalid mix value. Please enter a value between 0 and 1: ");
-        scanf("%f", &params.mix);
+        scanf("%lf", &params.mix);
     }
     //the highcut
     printf("Enter highcut value (between 1 and 20000): ");
-    scanf("%f", &params.highcut);
+    scanf("%lf", &params.highcut);
     while (params.highcut < 1 || params.highcut > 20000) {
         printf("Invalid highcut value. Please enter a value between 1 and 20000: ");
-        scanf("%f", &params.highcut);
+        scanf("%lf", &params.highcut);
     }
     //the lowcut
     printf("Enter lowcut value (between 1 and 20000): ");
-    scanf("%f", &params.lowcut);
+    scanf("%lf", &params.lowcut);
     while (params.lowcut < 1 || params.lowcut > 20000) {
         printf("Invalid highcut value. Please enter a value between 1 and 20000: ");
-        scanf("%f", &params.lowcut);
+        scanf("%lf", &params.lowcut);
     }
     //the feedback
     printf("Enter feedback value (between 0 and 0.1): ");
-    scanf("%f", &params.feedback);
+    scanf("%lf", &params.feedback);
     while (params.feedback < 0 || params.feedback > 0.1) {
         printf("Invalid feedback value. Please enter a value between 0 and 0.1: ");
-        scanf("%f", &params.feedback);
+        scanf("%lf", &params.feedback);
     }
     //the shift
     printf("Enter shift value (between -12 and 12): ");
-    scanf("%f", &params.shift);
+    scanf("%lf", &params.shift);
     while (params.shift < -12 || params.shift > 12) {
         printf("Invalid shift value. Please enter a value between -12 and 12: ");
-        scanf("%f", &params.shift);
+        scanf("%lf", &params.shift);
     }
     //the size
     printf("Enter size value (between 0 and 1): ");
-    scanf("%f", &params.size);
+    scanf("%lf", &params.size);
     while (params.size < 0 || params.size > 1) {
         printf("Invalid size value. Please enter a value between 0 and 1: ");
-        scanf("%f", &params.size);
+        scanf("%lf", &params.size);
     }
     //the diffusion
     printf("Enter diffusion value (between 0 and 10): ");
-    scanf("%f", &params.diffusion);
+    scanf("%lf", &params.diffusion);
     while (params.diffusion < 0 || params.diffusion > 10) {
         printf("Invalid diffusion value. Please enter a value between 0 and 10: ");
-        scanf("%f", &params.diffusion);
+        scanf("%lf", &params.diffusion);
     }
 
     //recap of the parameters
@@ -110,7 +110,7 @@ double *generate_win(int size, double fade){
     for(int i=0; i<size; i++){
         //fade-in
         if(i<fade_length){
-            win[i] = (double)i/(double)size; 
+            win[i] = (double)i/(double)fade_length; 
         }
         //fade-out
         else if(i>size-fade_length){

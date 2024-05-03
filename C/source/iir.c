@@ -9,7 +9,9 @@ IIR *init_IIR(Coefficients *a, Coefficients *b){
     //initialize the IIR filter
     IIR* iir = (IIR*)malloc(sizeof(IIR));
     iir->xbuf = (data_t*)malloc((b->order+MAX_BUFFER_SIZE)*sizeof(data_t));
+    memset(iir->xbuf, 0.0, (b->order+MAX_BUFFER_SIZE)*sizeof(data_t));
     iir->ybuf = (data_t*)malloc((a->order+MAX_BUFFER_SIZE)*sizeof(data_t));
+    memset(iir->ybuf, 0.0, (a->order+MAX_BUFFER_SIZE)*sizeof(data_t));
     //check if memory allocation was successful
     if(iir == NULL || iir->xbuf == NULL || iir->ybuf == NULL){
         fprintf(stderr, "Error: Failed to allocate memory for IIR filter\n");
