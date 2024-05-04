@@ -23,9 +23,9 @@
 typedef struct {
     IIR** allpasses; 
     IIR** combs;
-    int n_ap; 
-    int n_c;
-    double wet; 
+    int *n_ap; 
+    int *n_c;
+    double *wet; 
 } Schroeder_reverberator;
 
 //-----------------------------------------------------------------

@@ -26,14 +26,14 @@
  * 
 */
 typedef struct {
-    double shift_factor;
-    int input_size; 
-    double* win;
-    data_t* input_buf;
-    int len_input_buf; 
-    data_t* output_buf;
-    int len_output_buf; 
-    data_t* last_grain;
+    double *shift_factor;
+    int *input_size; 
+    double *win;
+    data_t *input_buf;
+    int *len_input_buf; 
+    data_t *output_buf;
+    int *len_output_buf; 
+    data_t *last_grain;
 } GS_pitchshift;
 
 //-----------------------------------------------------------------

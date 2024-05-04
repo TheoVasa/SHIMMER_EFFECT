@@ -11,6 +11,7 @@ int main(int argc, char* argv[]) {
     Parameters params = getUserParameters();
     Shimmer* shimmer = init_shimmer(&params);
 
+
     //start the audio process 
     audio_process(params.mode, shimmer);
 

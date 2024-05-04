@@ -8,10 +8,10 @@
 IIR *init_IIR(Coefficients *a, Coefficients *b){
     //initialize the IIR filter
     IIR* iir = (IIR*)malloc(sizeof(IIR));
-    iir->xbuf = (data_t*)malloc((b->order+MAX_BUFFER_SIZE)*sizeof(data_t));
-    memset(iir->xbuf, 0.0, (b->order+MAX_BUFFER_SIZE)*sizeof(data_t));
-    iir->ybuf = (data_t*)malloc((a->order+MAX_BUFFER_SIZE)*sizeof(data_t));
-    memset(iir->ybuf, 0.0, (a->order+MAX_BUFFER_SIZE)*sizeof(data_t));
+    iir->xbuf = (data_t*)malloc((*b->order+MAX_BUFFER_SIZE)*sizeof(data_t));
+    memset(iir->xbuf, 0.0, (*b->order+MAX_BUFFER_SIZE)*sizeof(data_t));
+    iir->ybuf = (data_t*)malloc((*a->order+MAX_BUFFER_SIZE)*sizeof(data_t));
+    memset(iir->ybuf, 0.0, (*a->order+MAX_BUFFER_SIZE)*sizeof(data_t));
     //check if memory allocation was successful
     if(iir == NULL || iir->xbuf == NULL || iir->ybuf == NULL){
         fprintf(stderr, "Error: Failed to allocate memory for IIR filter\n");
@@ -28,17 +28,17 @@ IIR *init_IIR(Coefficients *a, Coefficients *b){
 
 void reset_IIR(IIR* iir){
     //reset the internal buffers of the IIR filter
-    memset(iir->xbuf, 0, ((iir->b->order)+MAX_BUFFER_SIZE) * sizeof(data_t));
-    memset(iir->ybuf, 0, ((iir->a->order)+MAX_BUFFER_SIZE) * sizeof(data_t));
+    memset(iir->xbuf, 0, ((*iir->b->order)+MAX_BUFFER_SIZE) * sizeof(data_t));
+    memset(iir->ybuf, 0, ((*iir->a->order)+MAX_BUFFER_SIZE) * sizeof(data_t));
 }
 
 void filter_IIR(IIR* iir, data_t* x, data_t* y, int buffer_size){
     //the orders
-    int N = iir->b->order;
-    int M = iir->a->order;
+    int N = *iir->b->order;
+    int M = *iir->a->order;
     //number of non-zeros coefficients 
-    int N_a = iir->a->N;
-    int N_b = iir->b->N;
+    int N_a = *iir->a->N;
+    int N_b = *iir->b->N;
 
     //append input to internal buffer
     memcpy(iir->xbuf+N, x, buffer_size * sizeof(data_t));
@@ -79,8 +79,12 @@ void free_IIR(IIR* iir){
     Coefficients *b = iir->b;
     free(a->index);
     free(a->val);
+    free(a->N);
+    free(a->order);
     free(b->index);
     free(b->val);
+    free(b->N);
+    free(b->order);
     free(a); 
     free(b); 
     free(iir->xbuf);

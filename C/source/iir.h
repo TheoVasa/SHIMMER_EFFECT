@@ -21,8 +21,8 @@
 typedef struct {
     int* index; 
     double* val;
-    int N;
-    int order;
+    int *N;
+    int *order;
 } Coefficients;
 
 /**

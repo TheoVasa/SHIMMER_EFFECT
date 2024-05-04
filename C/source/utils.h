@@ -11,14 +11,14 @@
 */
 #define PATH_TO_INPUT_FILE "./audio/VOX.wav"
 #define PATH_TO_OUTPUT_FILE "./audio/output.wav"
-#define MODES {"real-time", "record", "play-back"}
+#define MODES {"real-time", "play-back"}
 
 //shimmer parameters template (used to run without specifying all the parameters)
-#define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=13000,.highcut=100,.mix=0.5,.feedback=0.03,.shift=12,.size=0.5,.diffusion=5}
+#define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=13000,.highcut=100,.mix=0.6,.feedback=0.05,.shift=12,.size=0.8,.diffusion=5}
 //the dry/wet ratio of the reverberator
-#define WET_REVERB 0.3
+#define WET_REVERB 0.7
 //the dry/wet ratio of the pitcher
-#define PITCH_RATIO 0.3
+#define PITCH_RATIO 0.2
 
 /**
  * audio parameters
@@ -29,8 +29,8 @@
 #define BUFFER_SIZE (256)
 //the maximum buffer size 
 #define MAX_BUFFER_SIZE (2048)
-//the number of channels
-#define NUM_CHANNELS (1)
+//stereo offset in ms(to simulate stereo effect)
+#define STEREO_OFFSET (5.0)
 //sample type 
 #define data_t float
 

@@ -10,16 +10,20 @@ Parameters getUserParameters(void) {
     char mode[20];
 
     //ask for the mode 
-    printf("Enter mode (real-time, play-back, or record): ");
+    printf("Enter mode (real-time or play-back): ");
     scanf("%s", mode);
-    while (strcmp(mode, "real-time") != 0 && strcmp(mode, "play-back") != 0 && strcmp(mode, "record") != 0) {
-        printf("Invalid mode. Please enter real-time, play-back, or record: ");
+    while (strcmp(mode, "real-time") != 0 && strcmp(mode, "play-back") != 0) {
+        printf("Invalid mode. Please enter real-time or play-back :");
         scanf("%s", mode);
     }
     //ask if we want to use the default parameters
     printf("Do you want to use default parameters for the shimmer ? [y/n]\n"); 
     char answer[10];
     scanf("%s", answer);
+    while(strcmp(answer, "y") != 0 && strcmp(answer, "n") != 0){
+        printf("Invalid answer. Please enter y or n :");
+        scanf("%s", answer);
+    }
     if(strcmp(answer, "y") == 0){
         
         params = DEFAULT_PARAMS; 

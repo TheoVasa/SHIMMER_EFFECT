@@ -15,7 +15,7 @@
  * @param buffer The internal buffer of the delay line.
 */
 typedef struct {
-    int delay; 
+    int *delay; 
     data_t* buffer;
 } DelayLine;
 

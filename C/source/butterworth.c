@@ -8,6 +8,7 @@
 
 Butterworth *init_butterworth(int type, double fc){
     //initialize the butterworth filter
+    printf("coucou\n");
     Butterworth* butterworth = (Butterworth*)malloc(sizeof(Butterworth));
     Coefficients *a = (Coefficients*)malloc(sizeof(Coefficients)); 
     Coefficients *b = (Coefficients*)malloc(sizeof(Coefficients));
@@ -26,6 +27,7 @@ Butterworth *init_butterworth(int type, double fc){
         //TODO compute the coefficients of the high-pass butterworth
     }
     butterworth->iir = init_IIR(a, b);
+    printf("coucou\n");
     return butterworth;
 }
 
