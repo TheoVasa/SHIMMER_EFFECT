@@ -1,7 +1,7 @@
 CFLAGS = -Wall -std=c99 -g
 CC = gcc
 #library directory 
-LDFLAGS = -I/c/msys64/ucrt64/include -L/c/msys64/ucrt64/lib -llibportaudio -ltinywav
+LDFLAGS = -I./lib -L./lib -llibportaudio -ltinywav
 
 # Define project directories
 SOURCE_DIR = source

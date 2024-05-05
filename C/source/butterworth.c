@@ -27,7 +27,6 @@ Butterworth *init_butterworth(int type, double fc){
         //TODO compute the coefficients of the high-pass butterworth
     }
     butterworth->iir = init_IIR(a, b);
-    printf("coucou\n");
     return butterworth;
 }
 

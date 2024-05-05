@@ -21,7 +21,9 @@ int rt_callback(const void *inputBuffer, void *outputBuffer, unsigned long frame
         data_t left[framesPerBuffer];
         data_t right[framesPerBuffer];
         apply_shimmer(data->shimmer, in, left, framesPerBuffer);
+        //delay right channel to emulate stereo output
         apply_delay_line(data->delayLine, left, right, framesPerBuffer);
+        //interleave the left and right channels
         for (int i = 0; i < framesPerBuffer; ++i) {
             out[2*i] = left[i];
             out[2*i + 1] = right[i];
@@ -97,7 +99,7 @@ void audio_process(const char *mode, Shimmer *sh){
     printf("----------------------------\n");
     printf("Starting real-time audio processing. Speak into the microphone !\n\n");
     printf("/!/ Try to wear headphones to avoid feedback and larsen effect/!/\n\n");
-    // Wait for the user to press a key
+    // Wait for the user to type stop
     printf("Press 'stop' then <enter> to quit\n");
     printf("----------------------------\n");
     char stop[10];

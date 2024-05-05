@@ -22,7 +22,7 @@
  */
 //the sample rate
 #define SAMPLE_RATE 44100
-//the buffer size
+//the buffer size (will be used in play-back mode)
 #define BUFFER_SIZE (2048)
 //the maximum buffer size 
 #define MAX_BUFFER_SIZE (2048)
