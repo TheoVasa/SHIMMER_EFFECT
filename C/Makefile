@@ -1,7 +1,9 @@
 CFLAGS = -Wall -std=c99 -g
 CC = gcc
 #library directory 
-LDFLAGS = -I./lib -L./lib -llibportaudio -ltinywav
+#LDFLAGS = 
+LDFLAGS = -I./lib -L./lib -lportaudio -ltinywav -lole32 -lwinmm -lsetupapi
+
 
 # Define project directories
 SOURCE_DIR = source
