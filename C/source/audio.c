@@ -11,19 +11,7 @@
 
 
 
-int rt_callback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData){
-    return 0; 
-}
 
-int record_callback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData){
-    return 0; 
-
-}
-
-int playback_callback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData){
-    return 0; 
-
-}
 
 void audio_process(const char *mode, Shimmer *sh){
     //set the static shimmer pointer 
@@ -34,6 +22,79 @@ void audio_process(const char *mode, Shimmer *sh){
     if(strcmp(mode, "real-time") == 0){
         //TODO implement real-time mode 
         printf("====== REAL-TIME MODE ======\n");
+        // Initialize PortAudio
+        PaError err = Pa_Initialize();
+        if (err != paNoError) {
+            fprintf(stderr, "Error: Failed to initialize PortAudio\n");
+            exit(EXIT_FAILURE);
+        }
+
+        // Set up the input and output parameters
+        PaStreamParameters inputParameters, outputParameters;
+        inputParameters.device = Pa_GetDefaultInputDevice();
+        inputParameters.channelCount = 1; // Mono input
+        inputParameters.sampleFormat = paFloat32;
+        inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
+        inputParameters.hostApiSpecificStreamInfo = NULL;
+
+        outputParameters.device = Pa_GetDefaultOutputDevice();
+        outputParameters.channelCount = 1; // Mono output
+        outputParameters.sampleFormat = paFloat32;
+        outputParameters.suggestedLatency = Pa_GetDeviceInfo(outputParameters.device)->defaultLowOutputLatency;
+        outputParameters.hostApiSpecificStreamInfo = NULL;
+
+        // Open the audio stream
+        PaStream *stream;
+        err = Pa_OpenStream(&stream, &inputParameters, &outputParameters, SAMPLE_RATE, BUFFER_SIZE, paNoFlag, NULL, NULL);
+        if (err != paNoError) {
+            fprintf(stderr, "Error: Failed to open audio stream\n");
+            exit(EXIT_FAILURE);
+        }
+
+        // Start the audio stream
+        err = Pa_StartStream(stream);
+        if (err != paNoError) {
+            fprintf(stderr, "Error: Failed to start audio stream\n");
+            exit(EXIT_FAILURE);
+        }
+
+        // Process audio in real-time
+        while (1) {
+            // Read input from the microphone
+            float inputBuffer[BUFFER_SIZE];
+            err = Pa_ReadStream(stream, inputBuffer, BUFFER_SIZE);
+            if (err != paNoError) {
+                fprintf(stderr, "Error: Failed to read audio stream\n");
+                exit(EXIT_FAILURE);
+            }
+
+            // Process the input buffer using the shimmer effect
+            float outputBuffer[BUFFER_SIZE];
+            apply_shimmer(shimmer, inputBuffer, outputBuffer, BUFFER_SIZE);
+
+            // Write the processed audio to the speaker
+            err = Pa_WriteStream(stream, outputBuffer, BUFFER_SIZE);
+            if (err != paNoError) {
+                fprintf(stderr, "Error: Failed to write audio stream\n");
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        // Stop and close the audio stream
+        err = Pa_StopStream(stream);
+        if (err != paNoError) {
+            fprintf(stderr, "Error: Failed to stop audio stream\n");
+            exit(EXIT_FAILURE);
+        }
+
+        err = Pa_CloseStream(stream);
+        if (err != paNoError) {
+            fprintf(stderr, "Error: Failed to close audio stream\n");
+            exit(EXIT_FAILURE);
+        }
+
+        // Terminate PortAudio
+        Pa_Terminate();
         printf("============================\n"); 
     //play-back mode 
     } else if(strcmp(mode, "play-back") == 0){
@@ -53,13 +114,56 @@ void audio_process(const char *mode, Shimmer *sh){
         } else if (strcmp(answer, "n") == 0){
             num_channel_out = 1;
         }
-        printf("Reading and processing input file %s :  0%%", PATH_TO_INPUT_FILE);
+        //ask the user the name of the input file
+        char input_file_name[24];
+        printf("Enter the name of the input file (max 20 char): ");
+        scanf("%s", input_file_name);
+        strcat(input_file_name, ".wav");
+        //create the path to the input and output file
+        char path_to_input_file[50] = PATH_TO_AUDIO; 
+        strcat(path_to_input_file, "/");
+        strcat(path_to_input_file, input_file_name);
+
+        //check if the file exists
+        FILE *file = fopen(path_to_input_file, "r");
+        while (file == NULL) {
+            printf("File not found. Please enter a valid input file name: ");
+            scanf("%s", input_file_name);
+            strcat(input_file_name, ".wav");
+            strcpy(path_to_input_file, PATH_TO_AUDIO);
+            strcat(path_to_input_file, "/");
+            strcat(path_to_input_file, input_file_name);
+            file = fopen(path_to_input_file, "r");
+        }
+        fclose(file);
+
+        //ask the user the name of the output file
+        char output_file_name[24];
+        printf("Enter the name of the output file (max 20 char): ");
+        scanf("%s", output_file_name);
+        strcat(output_file_name, ".wav");
+        
+        char path_to_output_file[50] = PATH_TO_AUDIO; 
+        strcat(path_to_output_file, "/");
+        strcat(path_to_output_file, output_file_name);
+
+
+        //print all the informations given by the user 
+        printf("----------------------------\n");
+        printf("Input file : %s\n", path_to_input_file);
+        printf("Output file : %s\n", path_to_output_file);
+        if(num_channel_out == 1){
+            printf("Output mode : Mono\n");
+        } else if(num_channel_out == 2){
+            printf("Output mode : Stereo\n");
+        }
+        
 
         //read an input file, process it and write input into a file  using the tinywav library [https://github.com/mhroth/tinywav]
         //open the input structure
         TinyWav tw_read;
         tinywav_open_read(&tw_read, 
-            PATH_TO_INPUT_FILE,
+            path_to_input_file,
             TW_SPLIT 
         );
         //read informations
@@ -74,6 +178,9 @@ void audio_process(const char *mode, Shimmer *sh){
         int num_samples_by_channel = tw_read.numFramesInHeader;
         //the sample rate
         int sample_rate = tw_read.h.SampleRate;
+        //print the informations of the input file
+        printf("Number of samples : %d\n", num_samples_by_channel);
+        printf("Sample rate : %d\n", sample_rate);
               
         //open the write structure
         TinyWav tw_output;
@@ -82,7 +189,7 @@ void audio_process(const char *mode, Shimmer *sh){
             sample_rate,
             TW_FLOAT32, 
             TW_SPLIT,         
-            PATH_TO_OUTPUT_FILE 
+            path_to_output_file 
         );
 
         int samples_left = num_samples_by_channel;
@@ -105,6 +212,8 @@ void audio_process(const char *mode, Shimmer *sh){
         for (int j = 0; j < num_channel_out; ++j) {
             samples_output_ptr[j] = samples_output + j*block_size;
         }
+        printf("----------------------------\n");
+        printf("Reading and processing input file :  0%%");
 
         while(samples_left > 0){
         //read input file
@@ -136,7 +245,7 @@ void audio_process(const char *mode, Shimmer *sh){
 
         //print the end of the process
         printf("\rOperation Done !%50s\n", " "); 
-        printf("Output file written at %s\n", PATH_TO_OUTPUT_FILE);
+        printf("Output file written at the given location !\n");
         printf("============================\n"); 
 
     } else {

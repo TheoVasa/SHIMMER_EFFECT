@@ -9,8 +9,7 @@
 /**
  * project parameters
 */
-#define PATH_TO_INPUT_FILE "./audio/VOX.wav"
-#define PATH_TO_OUTPUT_FILE "./audio/output.wav"
+#define PATH_TO_AUDIO "./audio"
 #define MODES {"real-time", "play-back"}
 
 //shimmer parameters template (used to run without specifying all the parameters)
@@ -26,7 +25,7 @@
 //the sample rate
 #define SAMPLE_RATE 44100
 //the buffer size
-#define BUFFER_SIZE (256)
+#define BUFFER_SIZE (64)
 //the maximum buffer size 
 #define MAX_BUFFER_SIZE (2048)
 //stereo offset in ms(to simulate stereo effect)
