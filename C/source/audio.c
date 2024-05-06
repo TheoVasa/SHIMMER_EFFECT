@@ -97,8 +97,9 @@ void audio_process(const char *mode, Shimmer *sh){
     }
     //inform the user that the process is starting
     printf("----------------------------\n");
-    printf("Starting real-time audio processing. Speak into the microphone !\n\n");
-    printf("/!/ Try to wear headphones to avoid feedback and larsen effect/!/\n\n");
+    printf("Starting real-time audio processing\n\n");
+    printf("The input and output devices are the one marked as default on your computer audio settings\n\n"); 
+    printf("/!/ If you are using a microphone, wear headphones to avoid feedback and larsen effect/!/\n\n");
     // Wait for the user to type stop
     printf("Press 'stop' then <enter> to quit\n");
     printf("----------------------------\n");

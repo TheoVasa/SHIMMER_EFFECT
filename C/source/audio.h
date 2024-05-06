@@ -23,7 +23,7 @@ typedef struct {
 //-----------------------------------------------------------------
 
 /**
- * @brief The callback function that will be used by the portaudio library to perform real-time audio processes (take input from microphone, process using shimmer and write to output buffer)
+ * @brief The callback function that will be used by the portaudio library to perform real-time audio processes
  * 
  * @param inputBuffer The input buffer
  * 
@@ -43,7 +43,7 @@ int rt_callback(const void *inputBuffer, void *outputBuffer, unsigned long frame
 
 
 /**
- * @brief Process the audio signal given the mode (record, playback, real-time)
+ * @brief Process the audio signal given the mode (playback, real-time)
  * 
  * @param mode The mode of the audio processing
  * 

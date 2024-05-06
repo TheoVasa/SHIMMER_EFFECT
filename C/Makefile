@@ -1,15 +1,15 @@
 CFLAGS = -Wall -std=c99 -g
 CC = gcc
-#library directory 
-#LDFLAGS = 
-LDFLAGS = -I./lib -L./lib -lportaudio -ltinywav -lole32 -lwinmm -lsetupapi
-
-
 # Define project directories
 SOURCE_DIR = source
-DATA_DIR = data
 AUDIO_DIR = audio
 BUILD_DIR = build
+LIBRARY_DIR = lib
+
+#library managment
+LIB_INC := $(wildcard $(LIBRARY_DIR)/*.h)
+LDFLAGS = -I.$(LIB_INC) -L./$(LIBRARY_DIR) -lportaudio -ltinywav -lfilterlib -lole32 -lwinmm -lsetupapi
+
 # output name
 OUT_NAME = shimmer.exe
 
@@ -31,16 +31,13 @@ $(OUT_NAME): $(OBJS)
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.c $(HEADERS)
 	$(CC) $(CFLAGS)  -c $< -o $@ 
 
-# Rule to copy data files to the build directory
-copy_data:
-	cp -r $(DATA_DIR) $(BUILD_DIR)
 
 # Rule to copy audio files to the build directory
 copy_audio:
 	cp -r $(AUDIO_DIR) $(BUILD_DIR)
 
 # Phony targets
-.PHONY: all copy_data copy_audio clean
+.PHONY: all copy_audio clean
 
 # Clean targets
 clean:

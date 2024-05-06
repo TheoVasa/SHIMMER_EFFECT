@@ -88,7 +88,7 @@ Parameters getUserParameters(void) {
     //recap of the parameters
     recap : 
     //clean the output
-    system("cls"); 
+    //system("cls"); 
     printf("Mode: %s\n", params.mode);
     printf("========= PARAMETERS =======\n"); 
     printf("Mix: %.2f\n", params.mix);
@@ -154,6 +154,7 @@ double pitch_factor(int shift){
 int is_equal(data_t x, data_t y){
     return fabs(x-y) < 1e-6*fabsl(y);
 }
+
 
 
 

@@ -11,7 +11,7 @@
 */
 #define PATH_TO_AUDIO "./audio"
 //shimmer parameters template (used to run without specifying all the parameters)
-#define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=13000,.highcut=100,.mix=0.6,.feedback=0.05,.shift=12,.size=0.8,.diffusion=5}
+#define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=15000,.highcut=100,.mix=0.4,.feedback=0.05,.shift=12,.size=0.8,.diffusion=5}
 //the dry/wet ratio of the reverberator
 #define WET_REVERB 0.7
 //the dry/wet ratio of the pitcher

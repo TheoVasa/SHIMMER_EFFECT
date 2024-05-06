@@ -1,28 +1,31 @@
 #ifndef BUTTERWORTH_H
 #define BUTTERWORTH_H
 
+#include "filterlib.h"
 #include "iir.h"
 //-----------------------------------------------------------------
 //macros declarations
 //-----------------------------------------------------------------
 
-
 //-----------------------------------------------------------------
 //structures delcarations
 //-----------------------------------------------------------------
+// BWLowPass and BWHighPass uses exactly the same struct
+typedef BWLowPass ButterCoeff; 
 
 /**
- * @brief represent an butterworth filter
+ * @brief represent an butterworth filter using the external library https://github.com/adis300/filter-c
  * 
- * @param iir The IIR filter.
- * 
+ * @param butter The IIR filter.
  * 
  * @param type The type of the butterworth filter (0 for low-pass, 1 for high-pass).
 */
 typedef struct butterworth {
-    IIR* iir;
-    int type;
+    ButterCoeff* butter;
+    int *type;
+    double *fc;
 } Butterworth;
+
 
 //-----------------------------------------------------------------
 //function declarations

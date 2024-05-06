@@ -27,8 +27,8 @@ Shimmer* init_shimmer(Parameters *parameters){
     shimmer->reverberator = init_schroeder(parameters->size, parameters->diffusion);
     shimmer->delay_line1 = init_delay_line(GRAIN_SIZE);
     shimmer->delay_line2 = init_delay_line(GRAIN_SIZE);
-    //shimmer->lowpass = init_butterworth(LOWPASS, parameters->lowcut);
-    //shimmer->highpass = init_butterworth(HIGHPASS, parameters->highcut);
+    shimmer->lowpass = init_butterworth(LOWPASS, parameters->lowcut);
+    shimmer->highpass = init_butterworth(HIGHPASS, parameters->highcut);
     shimmer->parameters = parameters;
 
     return shimmer;
@@ -73,9 +73,10 @@ void apply_shimmer(Shimmer* shimmer, data_t* x, data_t* y, int buffer_size){
         *shimmer->feedback_buf = out;
     }
     //apply lowpass
-    //filter_butterworth(shimmer->lowpass, y, y, buffer_size);
+    data_t filt[buffer_size];
+    filter_butterworth(shimmer->lowpass, y_temp, filt, buffer_size);
     //apply highpass
-    //filter_butterworth(shimmer->highpass, y, y, buffer_size);
+    filter_butterworth(shimmer->highpass, filt, y_temp, buffer_size);
     //delay the dry input
     data_t del[buffer_size]; 
     memset(del, 0.0, buffer_size*sizeof(data_t)); 
@@ -93,7 +94,7 @@ void free_shimmer(Shimmer* shimmer){
     free_schroeder(shimmer->reverberator);
     free_delay_line(shimmer->delay_line1);
     free_delay_line(shimmer->delay_line2);
-    //free_butterworth(shimmer->lowpass);
+    free_butterworth(shimmer->lowpass);
     //free_butterworth(shimmer->highpass);
     free(shimmer->feedback_buf);
     free(shimmer); 

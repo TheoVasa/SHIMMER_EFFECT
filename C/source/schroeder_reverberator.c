@@ -153,7 +153,7 @@ IIR* generate_allpass(double gain, double delay){
     Coefficients *a = (Coefficients*)malloc(sizeof(Coefficients));
     Coefficients *b = (Coefficients*)malloc(sizeof(Coefficients));
     a->order = (int*)malloc(sizeof(int));
-    b->order = (int*)malloc(2*sizeof(int));
+    b->order = (int*)malloc(sizeof(int));
     a->index = (int*)malloc(sizeof(int));
     a->val = (double*)malloc(sizeof(double));
     a->N = (int*)malloc(sizeof(int));
