@@ -4,25 +4,32 @@
 
 #include "iir.h"
 #include "utils.h"
+#include "lfo.h"
 
-IIR *init_IIR(Coefficients *a, Coefficients *b){
+IIR *init_IIR(Coefficients *a, Coefficients *b, double rate, double depth){
     //initialize the IIR filter
     IIR* iir = (IIR*)malloc(sizeof(IIR));
     iir->xbuf = (data_t*)malloc((*b->order+MAX_BUFFER_SIZE)*sizeof(data_t));
-    memset(iir->xbuf, 0.0, (*b->order+MAX_BUFFER_SIZE)*sizeof(data_t));
     iir->ybuf = (data_t*)malloc((*a->order+MAX_BUFFER_SIZE)*sizeof(data_t));
-    memset(iir->ybuf, 0.0, (*a->order+MAX_BUFFER_SIZE)*sizeof(data_t));
+    //init the LFO
+    iir->lfo = init_lfo(rate, depth); 
     //check if memory allocation was successful
-    if(iir == NULL || iir->xbuf == NULL || iir->ybuf == NULL){
+    if(iir == NULL || iir->xbuf == NULL || iir->ybuf == NULL || iir->lfo == NULL){
         fprintf(stderr, "Error: Failed to allocate memory for IIR filter\n");
         free(iir->xbuf);
         free(iir->ybuf);
+        free(iir->lfo);
         free(iir);
         exit(EXIT_FAILURE);
     }
+    //init the internal buffers
+    memset(iir->xbuf, 0.0, (*b->order+MAX_BUFFER_SIZE)*sizeof(data_t));
+    memset(iir->ybuf, 0.0, (*a->order+MAX_BUFFER_SIZE)*sizeof(data_t));
     //initialize the coefficients 
     iir->a = a;
     iir->b = b;
+    //start the LFO
+    start_lfo(iir->lfo);
     return iir;
 }
 
@@ -30,6 +37,8 @@ void reset_IIR(IIR* iir){
     //reset the internal buffers of the IIR filter
     memset(iir->xbuf, 0, ((*iir->b->order)+MAX_BUFFER_SIZE) * sizeof(data_t));
     memset(iir->ybuf, 0, ((*iir->a->order)+MAX_BUFFER_SIZE) * sizeof(data_t));
+    //reset the lfo
+    start_lfo(iir->lfo);
 }
 
 void filter_IIR(IIR* iir, data_t* x, data_t* y, int buffer_size){
@@ -52,14 +61,16 @@ void filter_IIR(IIR* iir, data_t* x, data_t* y, int buffer_size){
         for(int j = 0; j < N_b; j++){
             double b = iir->b->val[j];
             int d = (int)iir->b->index[j];
-            data_t r = is_equal(iir->xbuf[N + i - d], 0.0) ? 0.0 : iir->xbuf[N + i - d]; 
-            iir->ybuf[M + i] += b * r;
+            data_t r = iir->xbuf[N + i - d]; 
+            //compute the output with the modulation
+            iir->ybuf[M + i] += (data_t) (b + lfo_get_value(iir->lfo))* r;
         }
         for(int j = 0; j < N_a; j++){
             double a = iir->a->val[j];
             int d = (int) iir->a->index[j];
-            data_t r = is_equal(iir->ybuf[M + i - d], 0.0) ? 0.0 : iir->ybuf[M + i - d]; 
-            iir->ybuf[M + i] -= a * r;
+            data_t r = iir->ybuf[M + i - d];
+            //compute the output with the modulation
+            iir->ybuf[M + i] -= (data_t) (a + lfo_get_value(iir->lfo)) * r;
         }  
     }
     //copy the output to the output buffer
@@ -89,5 +100,7 @@ void free_IIR(IIR* iir){
     free(b); 
     free(iir->xbuf);
     free(iir->ybuf);
+    //free the lfo
+    free_lfo(iir->lfo);
     free(iir);
 }

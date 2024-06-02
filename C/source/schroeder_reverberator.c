@@ -7,12 +7,13 @@
 #include "utils.h"
 #include "iir.h"
 
-Schroeder_reverberator *init_schroeder(double size, double diffusion){
+Schroeder_reverberator *init_schroeder(double size, double diffusion, double depth, double rate){
     //allocate memory
     Schroeder_reverberator* schroeder = (Schroeder_reverberator*)malloc(sizeof(Schroeder_reverberator));
     schroeder->n_ap = (int*)malloc(sizeof(int));
     schroeder->n_c = (int*)malloc(sizeof(int));
     schroeder->wet = (double*)malloc(sizeof(double));
+    schroeder->butterworth = init_butterworth(LOWPASS, 4000);
     //test the allocation
     if(schroeder == NULL || schroeder->n_ap == NULL || schroeder->n_c == NULL || schroeder->wet == NULL){
         fprintf(stderr, "Error: Failed to allocate memory for schroeder reverberator\n");
@@ -63,7 +64,7 @@ Schroeder_reverberator *init_schroeder(double size, double diffusion){
         exit(EXIT_FAILURE);
     }
     for(int i = 0; i < N_ap; i++){
-        allpasses[i] = generate_allpass(g_ap[i], d_ap[i]);
+        allpasses[i] = generate_allpass(g_ap[i], d_ap[i], depth, rate);
     }
     //create the comb filters
     IIR **combs = (IIR**)malloc(N_C*sizeof(IIR*));
@@ -76,7 +77,7 @@ Schroeder_reverberator *init_schroeder(double size, double diffusion){
         exit(EXIT_FAILURE);
     }
     for(int i = 0; i < N_C; i++){
-        combs[i] = generate_comb(g_c[i], d_c[i]);
+        combs[i] = generate_comb(g_c[i], d_c[i], depth, rate);
     }
 
     //init the components of the reverberator
@@ -96,6 +97,7 @@ void reset_schroeder(Schroeder_reverberator* schroeder){
     for(int i = 0; i < *schroeder->n_c; i++){
         reset_IIR(schroeder->combs[i]);
     }
+    reset_butterworth(schroeder->butterworth);
 }
 
 void filter_schroeder(Schroeder_reverberator* schroeder, data_t* x, data_t* y, int buffer_size){
@@ -112,6 +114,8 @@ void filter_schroeder(Schroeder_reverberator* schroeder, data_t* x, data_t* y, i
             reverb_wet[j] += (1/(double)*schroeder->n_c)*temp[j];
         }
     }
+    //apply the low-pass filter
+    filter_butterworth(schroeder->butterworth, reverb_wet, reverb_wet, buffer_size);
    
     //apply the all-pass filters in series
     for(int i = 0; i < *schroeder->n_ap; i++){
@@ -143,10 +147,11 @@ void free_schroeder(Schroeder_reverberator* schroeder){
     free(schroeder->n_ap);
     free(schroeder->n_c);
     free(schroeder->wet);
+    free_butterworth(schroeder->butterworth);
     free(schroeder); 
 }
 
-IIR* generate_allpass(double gain, double delay){
+IIR* generate_allpass(double gain, double delay, double depth, double rate){
     //compute the length in samples given the delay in ms
     int m = time_to_samples(delay); 
     //init the memory needed to store the coefficients
@@ -188,11 +193,10 @@ IIR* generate_allpass(double gain, double delay){
     b->val[1] = 1;
     *b->N = 2;
     *b->order = m+1;
-
-    return init_IIR(a, b);
+    return init_IIR(a, b, rate, depth);
 }
 
-IIR* generate_comb(double gain, double delay){
+IIR* generate_comb(double gain, double delay, double depth, double rate){
     //compute the length in samples given the delay in ms
     int m = time_to_samples(delay); 
     //init the memory needed to store the coefficients
@@ -233,5 +237,5 @@ IIR* generate_comb(double gain, double delay){
     *b->order = 1;
     *b->N = 1;
 
-    return init_IIR(a, b);
+    return init_IIR(a, b, rate, depth);
 }

@@ -3,6 +3,7 @@
 
 #include "iir.h"
 #include "utils.h"
+#include "butterworth.h"
 
 //-----------------------------------------------------------------
 //structures delcarations
@@ -26,6 +27,8 @@ typedef struct {
     int *n_ap; 
     int *n_c;
     double *wet; 
+    Butterworth *butterworth;
+    
 } Schroeder_reverberator;
 
 //-----------------------------------------------------------------
@@ -39,10 +42,14 @@ typedef struct {
  * 
  * @param diffusion The diffusion parameter of the reverberator.
  * 
+ * @param depth The depth parameter for the modulation.
+ * 
+ * @param rate The rate parameter for the modulation.
+ * 
  * @return The dynamic allocated Schroeder reverberator
  * 
 */
-Schroeder_reverberator *init_schroeder(double size, double diffusion);
+Schroeder_reverberator *init_schroeder(double size, double diffusion, double depth, double rate);
 
 /**
  * @brief Reset the Schroeder reverberator internal buffers
@@ -84,9 +91,13 @@ void free_schroeder(Schroeder_reverberator* schroeder);
  * 
  * @param delay The delay of the all-pass filter.
  * 
+ * @param depth The depth of the modulation.
+ * 
+ * @param rate The rate of the modulation.
+ * 
  * @return The dynamic allocated IIR filter
 */
-IIR *generate_allpass(double gain, double delay);
+IIR *generate_allpass(double gain, double delay, double depth, double rate);
 
 /**
  * @brief generate a comb filter given a gain and a delay
@@ -95,8 +106,12 @@ IIR *generate_allpass(double gain, double delay);
  * 
  * @param delay The delay of the comb filter.
  * 
+ * @param depth The depth of the modulation.
+ * 
+ * @param rate The rate of the modulation.
+ * 
  * @return The dynamic allocated IIR filter
 */
-IIR *generate_comb(double gain, double delay);
+IIR *generate_comb(double gain, double delay, double depth, double rate);
 
 #endif

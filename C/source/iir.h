@@ -2,6 +2,7 @@
 #define IIR_H
 
 #include "utils.h"
+#include "lfo.h"
 
 //-----------------------------------------------------------------
 //structures delcarations
@@ -35,12 +36,15 @@ typedef struct {
  * @param xbuf The input buffer.
  * 
  * @param ybuf The output buffer.
+ * 
+ * @param lfo The LFO of the filter
 */
 typedef struct {
     Coefficients *a; 
     Coefficients *b;
     data_t* xbuf;
     data_t* ybuf;  
+    LFO *lfo;
 } IIR;
 
 
@@ -54,10 +58,14 @@ typedef struct {
  * @param a The denominator coefficients of the transfer function.
  * 
  * @param b The numerator coefficients of the transfer function.
+ * 
+ * @param rate The rate parameter for the modulation.
+ * 
+ * @param depth The depth parameter for the modulation.
  *  
  * @return The dynamic allocated IIR filter
 */
-IIR *init_IIR(Coefficients *a, Coefficients *b);
+IIR *init_IIR(Coefficients *a, Coefficients *b, double rate, double depth);
 
 /**
  * @brief Reset the IIR filter internal buffers

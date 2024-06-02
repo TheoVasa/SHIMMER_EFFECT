@@ -20,10 +20,8 @@
  * 
  * @param highpass The high-pass filter.
  * 
- * @param delay_line1 The first delay line.
- * 
- * @param delay_line2 The second delay line.
- * 
+ * @param delay_line The delay line.
+ *  
  * @param parameters The parameters of the shimmer effect.
  * 
  * @param feedback_buf The internal output buffer for the feedback loop
@@ -34,8 +32,7 @@ typedef struct {
     GS_pitchshift *pitch_shifter;
     Butterworth *lowpass;
     Butterworth *highpass;
-    DelayLine *delay_line1;
-    DelayLine *delay_line2;
+    DelayLine *delay_line;
     Parameters *parameters;
     data_t *feedback_buf;
 } Shimmer;

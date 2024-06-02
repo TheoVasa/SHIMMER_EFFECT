@@ -1,5 +1,4 @@
 #include <stdio.h>
-
 #include "utils.h"
 #include "shimmer.h"
 #include "audio.h"

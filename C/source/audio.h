@@ -16,6 +16,12 @@ typedef struct {
     DelayLine *delayLine;
     //The number of output channels 
     int numOutputChannels;
+    //the chosen input channel, if multiple channels are available
+    int channel;
+    //the number of input channels
+    int numInputChannels;
+    //if the effect is bypassed
+    int bypass;
 } UserData;
 
 //-----------------------------------------------------------------

@@ -57,9 +57,9 @@ Parameters getUserParameters(void) {
         scanf("%lf", &params.lowcut);
     }
     //the feedback
-    printf("Enter feedback value (between 0 and 0.1): ");
+    printf("Enter feedback value (between 0 and 1): ");
     scanf("%lf", &params.feedback);
-    while (params.feedback < 0 || params.feedback > 0.1) {
+    while (params.feedback < 0 || params.feedback > 1) {
         printf("Invalid feedback value. Please enter a value between 0 and 0.1: ");
         scanf("%lf", &params.feedback);
     }
@@ -78,17 +78,29 @@ Parameters getUserParameters(void) {
         scanf("%lf", &params.size);
     }
     //the diffusion
-    printf("Enter diffusion value (between 0 and 10): ");
+    printf("Enter diffusion value (between 0 and 1): ");
     scanf("%lf", &params.diffusion);
-    while (params.diffusion < 0 || params.diffusion > 10) {
+    while (params.diffusion < 0 || params.diffusion > 1) {
         printf("Invalid diffusion value. Please enter a value between 0 and 10: ");
         scanf("%lf", &params.diffusion);
+    }
+    //the depth
+    printf("Enter depth value (between 0 and 1): ");
+    scanf("%lf", &params.depth);
+    while (params.depth < 0 || params.depth > 1) {
+        printf("Invalid depth value. Please enter a value between 0 and 0.1: ");
+        scanf("%lf", &params.depth);
+    }
+    //the rate
+    printf("Enter rate value (between 0 and 1): ");
+    scanf("%lf", &params.rate);
+    while (params.rate < 0 || params.rate > 1) {
+        printf("Invalid rate value. Please enter a value between 0 and 10: ");
+        scanf("%lf", &params.rate);
     }
 
     //recap of the parameters
     recap : 
-    //clean the output
-    //system("cls"); 
     printf("Mode: %s\n", params.mode);
     printf("========= PARAMETERS =======\n"); 
     printf("Mix: %.2f\n", params.mix);
@@ -98,6 +110,11 @@ Parameters getUserParameters(void) {
     printf("Diffusion: %.2f\n", params.diffusion);
     printf("Lowcut: %.2f\n", params.lowcut);
     printf("Highcut: %.2f\n", params.highcut);
+    printf("Depth: %.2f\n", params.depth);
+    printf("Rate: %.2f\n", params.rate);
+
+    //rescale the parameters 
+    rescale_parameters(&params);
 
     return params;
 }
@@ -153,6 +170,15 @@ double pitch_factor(int shift){
 
 int is_equal(data_t x, data_t y){
     return fabs(x-y) < 1e-6*fabsl(y);
+}
+
+void rescale_parameters(Parameters *params){
+    //rescale the parameters to the correct range
+    params->feedback = MIN_FEEDBACK + (MAX_FEEDBACK - MIN_FEEDBACK)*params->feedback;
+    params->size = MIN_SIZE + (MAX_SIZE - MIN_SIZE)*params->size;
+    params->diffusion = MIN_DIFFUSION + (MAX_DIFFUSION - MIN_DIFFUSION)*params->diffusion;
+    params->depth = MIN_DEPTH + (MAX_DEPTH - MIN_DEPTH)*params->depth;
+    params->rate = MIN_RATE + (MAX_RATE - MIN_RATE)*params->rate; 
 }
 
 

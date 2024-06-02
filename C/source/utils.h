@@ -11,11 +11,35 @@
 */
 #define PATH_TO_AUDIO "./audio"
 //shimmer parameters template (used to run without specifying all the parameters)
-#define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=15000,.highcut=100,.mix=0.4,.feedback=0.05,.shift=12,.size=0.8,.diffusion=5}
+#define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=100,.highcut=15000,.mix=0.4,.feedback=0.5,.shift=12.0,.size=0.5,.diffusion=0.5,.depth=0.5,.rate=0.5}
+
+/**
+ * shimmer parameters
+*/
 //the dry/wet ratio of the reverberator
 #define WET_REVERB 0.7
-//the dry/wet ratio of the pitcher
-#define PITCH_RATIO 0.2
+//the dry/wet ratio of the pitcher (old design)
+#define PITCH_RATIO 1
+//the minimum value of the feedback
+#define MIN_FEEDBACK 0.0
+//the maximum value of the feedback
+#define MAX_FEEDBACK 0.1
+//the minimum value of the size
+#define MIN_SIZE 0.0
+//the maximum value of the size
+#define MAX_SIZE 1.0
+//the minimum value of the diffusion
+#define MIN_DIFFUSION 0.0
+//the maximum value of the diffusion
+#define MAX_DIFFUSION 10.0
+//the minimum value of the depth
+#define MIN_DEPTH 0.0
+//the maximum value of the depth
+#define MAX_DEPTH 0.01
+//the minimum value of the rate
+#define MIN_RATE 10.0
+//the maximum value of the rate
+#define MAX_RATE 20.0
 
 /**
  * audio parameters
@@ -23,7 +47,7 @@
 //the sample rate
 #define SAMPLE_RATE 44100
 //the buffer size (will be used in play-back mode)
-#define BUFFER_SIZE (2048)
+#define BUFFER_SIZE (128)
 //the maximum buffer size 
 #define MAX_BUFFER_SIZE (2048)
 //stereo offset in ms(to simulate stereo effect)
@@ -40,9 +64,9 @@
 //basic gain parameter for an all-pass filter
 #define BASIC_GAIN_AP 0.7
 //basic gains for 4 combs filters in parallel
-#define BASIC_GAINS_C {0.773, 0.802, 0.753, 0.733}
+#define BASIC_GAINS_C {0.773, 0.802, 0.753, 0.733, 0.801, 0.753}
 //basic delays for 4 combs filters in parallel
-#define BASIC_DELAYS_C {113.2, 127.3, 153.5, 151.7}
+#define BASIC_DELAYS_C {113.2, 127.3, 153.5, 151.7, 251.3, 222.3}
 //maximum shift gain for the comb filters (shift from the basic gain with max size parameter)
 #define MAX_SHIFT_GAIN_C 0.1
 //maximum shift gain for the comb filters (shift from the basic gain with max size parameter)
@@ -50,9 +74,9 @@
 //minimum number of all passes filters (minimmum diffusion)
 #define MIN_AP 3
 //maximum number of all pass filters (maximum diffusion)
-#define MAX_AP 9
+#define MAX_AP 8
 //number of comb filters
-#define N_C 4
+#define N_C 6
 
 /**
  * template for the pitch shifter
@@ -76,13 +100,14 @@
 //reprensent HIGHPASS enum
 #define HIGHPASS 1
 //order of the butterworth filter
-#define ORDER 4
+#define ORDER 5
 
 /**
  * Useful macros
 */
 //maximum of two numbers
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define M_PI 3.14159265358979323846
 //-----------------------------------------------------------------
 //structures delcarations
 //-----------------------------------------------------------------
@@ -106,6 +131,10 @@
  * 
  * @param diffusion The diffusion of the shimmer effect.
  * 
+ * @param depth The depth of the modulations on the filters
+ * 
+ * @param rate The rate of the modulations on the filters
+ * 
 */
 typedef struct {
     char mode[20];
@@ -116,25 +145,9 @@ typedef struct {
     double shift;
     double size;
     double diffusion;
+    double depth;
+    double rate;
 } Parameters;
-
-/**
- * @brief represent the data structure for the shimmer effect
- * 
- * @param frameIndex The index of the current frame
- * 
- * @param maxFrameIndex The maximum index of the frame
- * 
- * @param samples The samples
-*/
-typedef struct
-{
-    int          frameIndex;  /* Index into sample array. */
-    int          maxFrameIndex;
-    data_t      *samples;
-}
-paData;
-
 
 
 //-----------------------------------------------------------------
@@ -200,7 +213,14 @@ void resample(data_t* x, data_t* y, int x_size, int y_size, double factor);
 */
 double pitch_factor(int shift); 
 
-int is_equal(data_t x, data_t y);
+/**
+ * @brief rescale all the parameters of the shimmer effect
+ * 
+ * @param params The parameters of the shimmer effect
+ * 
+ * @return void
+*/
+void rescale_parameters(Parameters *params);
 
 #endif
 
