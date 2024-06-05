@@ -11,7 +11,7 @@
 */
 #define PATH_TO_AUDIO "./audio"
 //shimmer parameters template (used to run without specifying all the parameters)
-#define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=100,.highcut=15000,.mix=0.4,.feedback=0.5,.shift=12.0,.size=0.5,.diffusion=0.5,.depth=0.5,.rate=0.5}
+#define DEFAULT_PARAMS (Parameters){.mode="",.lowcut=100,.highcut=10000,.mix=0.4,.feedback=0.5,.shift=12.0,.size=0.5,.diffusion=0.5,.depth=0.5,.rate=0.5}
 
 /**
  * shimmer parameters
