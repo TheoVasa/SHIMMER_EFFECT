@@ -42,4 +42,4 @@ The application offers two mode :
    
    To build the ASIO version of the effect, you just have to adapt the *ASIO* flag in the *MAKEFILE*
 
-> NOTE : If you're executing the program on the native Windows console, you will probably not see thrown error, the program will just crash (for example, if you did not connected any ASIO interface when using *shimmer_asio.exe"). 
+> NOTE : If you're executing the program on the native Windows console, you will probably not see thrown error, the program will just crash (for example, if you did not connected any ASIO interface when using *shimmer_asio.exe*). 
