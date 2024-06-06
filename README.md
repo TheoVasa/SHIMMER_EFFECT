@@ -23,7 +23,7 @@ The notebook represent the research process of this project. We start from scrat
 ## HOW TO USE THE C IMPLEMENTATION
 The C implementation has been built as a **windows** application, so it's not compatible with other operating systems. The libraries are linked statically, so you don't need anything to run the .exe file.
 
-If you want to play more with the effect and build your own version of the project, don't hesitate to adapt the *MAKEFILE* and all the templates variables in the file *utils.c*. 
+If you want to play more with the effect and build your own version of the project, don't hesitate to adapt the *MAKEFILE* and all the templates variables in the file *utils.h*. 
 
 The application offers two mode : 
 
