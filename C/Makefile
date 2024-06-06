@@ -1,8 +1,10 @@
 # C flags
-CFLAGS = -Wall -std=c99 -g
+CFLAGS = -Wall -std=c99 -g 
 CC = gcc
 # C++ flags
 CXX = g++
+# static flags 
+STATIC_FLAGS = -static-libgcc -static-libstdc++
 # Define project directories
 SOURCE_DIR = source
 AUDIO_DIR = audio
@@ -11,7 +13,7 @@ LIBRARY_DIR = lib
 # where the asio sdk is located
 ASIO_DIR = common/asio
 # If ASIO is used, set this value to 1 if you want to use ASIO as host API, 0 otherwise (it uses WMME)
-ASIO = 0
+ASIO = 1
 
 #library managment
 LIB_INC := $(wildcard $(LIBRARY_DIR)/*.h)
@@ -50,10 +52,10 @@ all: copy_audio $(OUT_NAME)
 # Rule to build the executable (depending on the configuration)
 ifeq ($(ASIO), 1)
 $(OUT_NAME): $(OBJS) $(CXX_OBJS)
-	$(CXX) $(LIB_INC) $(LIB_DIR) $^ -o $@ $(LDFLAGS)
+	$(CXX) $(STATIC_FLAGS) $(LIB_INC) $(LIB_DIR) $^ -o $@ $(LDFLAGS)
 else
 $(OUT_NAME): $(OBJS)
-	$(CC) $(LIB_INC) $(LIB_DIR) $^ -o $@ $(LDFLAGS)
+	$(CC) $(STATIC_FLAGS) $(LIB_INC) $(LIB_DIR) $^ -o $@ $(LDFLAGS)
 endif
 
 # Rule to compile C source files into object files
