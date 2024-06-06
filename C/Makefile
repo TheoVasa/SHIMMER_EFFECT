@@ -4,7 +4,7 @@ CC = gcc
 # C++ flags
 CXX = g++
 # static flags 
-STATIC_FLAGS = -static-libgcc -static-libstdc++
+STATIC_FLAGS = -static -static-libgcc -static-libstdc++
 # Define project directories
 SOURCE_DIR = source
 AUDIO_DIR = audio
@@ -13,7 +13,7 @@ LIBRARY_DIR = lib
 # where the asio sdk is located
 ASIO_DIR = common/asio
 # If ASIO is used, set this value to 1 if you want to use ASIO as host API, 0 otherwise (it uses WMME)
-ASIO = 1
+ASIO = 0
 
 #library managment
 LIB_INC := $(wildcard $(LIBRARY_DIR)/*.h)
